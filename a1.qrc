@@ -1,5 +1,5 @@
 <RCC>
-  <qresource prefix="ka">
-    <file>aszx_KA-52.png</file>
+  <qresource prefix="word">
+    <file>img/1.PNG</file>
   </qresource>
 </RCC>
