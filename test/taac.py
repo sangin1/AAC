@@ -18,6 +18,7 @@ def resource_path(relative_path):
     base_path = getattr(sys, "_MEIPASS", os.path.dirname(os.path.abspath(__file__)))
     return os.path.join(base_path, relative_path)
 
+#ui import
 form = resource_path('main.ui')
 form_class = uic.loadUiType(form)[0]
 
@@ -28,19 +29,29 @@ form_word2 = resource_path('word2.ui')
 form_word2window = uic.loadUiType(form_word2)[0]
 
 login_id = resource_path('loginid.ui')
-loin_id_window = uic.loadUiType(login_id)[0]
+login_id_window = uic.loadUiType(login_id)[0]
+
+login_pw = resource_path('loginpw.ui')
+login_pw_window = uic.loadUiType(login_pw)[0]
+
+warning_text = resource_path('warning.ui')
+warning_window = uic.loadUiType(warning_text)[0]
+
+checksum = resource_path('checksum.ui')
+checksum_window = uic.loadUiType(checksum)[0]
 
 idnum=0
 
 #mainpage
 class WindowClass(QMainWindow,QWidget, form_class):
+    global idnum
     cus = 0
     border_s = 'border-color: rgb(0,21,209); \nbackground-color: rgb(170, 242, 248);\nborder-style: solid;\nborder-width: 2px;\nborder-radius: 10px;'
     border_b = 'border-color: rgb(170, 242, 248); \nbackground-color: rgb(170, 242, 248);\nborder-style: solid;\nborder-width: 2px;\nborder-radius: 10px;'
-    
-    
+    idCode = 0   
     def __init__(self):
         super().__init__()
+        global idnum
         self.setupUi(self)
         self.cus=0
         self.label_list=[]
@@ -49,12 +60,13 @@ class WindowClass(QMainWindow,QWidget, form_class):
         self.label_list.append(self.label_3)
         self.label_list.append(self.label_4)
         self.label_list[self.cus].setStyleSheet(self.border_s)
-
-        #이미지추가 예시
-        #self.pix=QPixmap('img/1.PNG')
-        #self.label_list[0].setPixmap(self.pix)
-
+        if idnum == 0:
+            self.label_list[3].setText('로그인')
+        elif idnum > 0:
+            self.label_list[3].setText('로그아웃')
+            
     def keyReleaseEvent(self,e):
+        global idnum
         if e.key() == Qt.Key_W:
             if self.cus > 0:
                 self.label_list[self.cus].setStyleSheet(self.border_b)
@@ -71,12 +83,31 @@ class WindowClass(QMainWindow,QWidget, form_class):
                 self.second.show()
                 self.close()
             elif self.cus == 3:
-                self.login = loginidwindow()   
-                self.login.show()
-                self.close()
+                if idnum == 0:
+                    self.login = loginidwindow()   
+                    self.login.show()
+                    self.close()
+                elif idnum > 0:
+                    idnum = 0
+                    self.label_list[3].setText('로그인')
 
+#메시지 창
+class warningwindow(QDialog,QWidget,warning_window):
+    def __init__(self,text):
+        super(warningwindow,self).__init__()
+        self.initUi()
+        self.label_3.setText(text)
+        self.show()
+
+    def initUi(self):
+        self.setupUi(self)
+        
+    def keyPressEvent(self,e):
+        if e.key() == Qt.Key_F:
+            self.close()
+    
 #로그인(아이디)
-class loginidwindow(QDialog,QWidget,loin_id_window):
+class loginidwindow(QDialog,QWidget,login_id_window):
     word_table = [['ㄱ','ㄴ','ㄷ','ㄹ','ㅁ','ㅂ','ㅅ'],
                   ['ㅇ','ㅈ','ㅊ','ㅋ','ㅌ','ㅍ','ㅎ'],
                   ['ㄲ','ㄸ','ㅃ','ㅆ','ㅉ'],
@@ -123,6 +154,7 @@ class loginidwindow(QDialog,QWidget,loin_id_window):
 
     def keyPressEvent(self,e):
         if e.key() == Qt.Key_G:
+            num=0
             self.second = WindowClass()    
             self.second.show()
             self.close()
@@ -197,11 +229,150 @@ class loginidwindow(QDialog,QWidget,loin_id_window):
                     if value == self.text:
                         self.label_text += key
                 self.label.setText(jamo3(self.label_text))
-                
             elif self.x == 0 and self.y == 1:
                 self.text = ''
                 self.label_text = ''
                 self.label.setText(self.text)
+            elif self.x == 0 and self.y == 0:
+                self.second = loginpwwindow(self.label.text())    
+                self.second.show()
+                self.close()
+
+#로그인(비밀번호)
+class loginpwwindow(QDialog,QWidget,login_pw_window):
+    word_table = [['ㄱ','ㄴ','ㄷ','ㄹ','ㅁ','ㅂ','ㅅ'],
+                  ['ㅇ','ㅈ','ㅊ','ㅋ','ㅌ','ㅍ','ㅎ'],
+                  ['ㄲ','ㄸ','ㅃ','ㅆ','ㅉ'],
+                  ['ㅏ','ㅓ','ㅗ','ㅜ','ㅡ','ㅣ','ㅒ'],
+                  ['ㅑ','ㅕ','ㅛ','ㅠ','ㅐ','ㅔ','ㅖ']]
+    cons_all= {'r':'ㄱ', 'R':'ㄲ', 's':'ㄴ', 'e':'ㄷ', 'E':'ㄸ', 'f':'ㄹ', 'a':'ㅁ', 'q':'ㅂ', 'Q':'ㅃ', 't':'ㅅ', 'T':'ㅆ',
+           'd':'ㅇ', 'w':'ㅈ', 'W':'ㅉ', 'c':'ㅊ', 'z':'ㅋ', 'x':'ㅌ', 'v':'ㅍ', 'g':'ㅎ','k':'ㅏ', 'o':'ㅐ', 'i':'ㅑ', 'O':'ㅒ', 'j':'ㅓ', 'p':'ㅔ', 'u':'ㅕ', 'P':'ㅖ', 'h':'ㅗ', 'hk':'ㅘ', 'ho':'ㅙ', 'hl':'ㅚ',
+           'y':'ㅛ', 'n':'ㅜ', 'b':'ㅠ',  'm':'ㅡ', 'l':'ㅣ'}            
+    x=1
+    y=0
+    text=''
+    idText=''
+    label_text=''
+    border_s = 'font: 20pt "AcadEref"; border-color: rgb(0,21,209); \nbackground-color: rgb(170, 242, 248);\nborder-style: solid;\nborder-width: 2px;\nborder-radius: 10px;'
+    border_b = 'font: 20pt "AcadEref"; border-color: rgb(170,242,248); \nbackground-color: rgb(170, 242, 248);\nborder-style: solid;\nborder-width: 2px;\nborder-radius: 10px;'
+    border_g = 'background-color: rgb(0, 255, 0);\nborder-radius: 30px;'
+    border_gs = 'background-color: rgb(0, 255, 0);\nborder-radius: 30px;border-color: rgb(0,21,209);border-style: solid;\nborder-width: 2px'
+    border_rs = 'background-color: rgb(255, 69, 69);\nborder-radius: 30px;border-color: rgb(0,21,209);border-style: solid;\nborder-width: 2px'
+    border_r = 'background-color: rgb(255, 69, 69);\nborder-radius: 30px;'
+    def __init__(self,idText2):
+        super(loginpwwindow,self).__init__()
+        self.initUi()
+        self.idText = idText2
+        self.label_list[1][0].setStyleSheet(self.border_s)
+        self.show()
+
+    def initUi(self):
+        self.setupUi(self)
+        self.label_list=[]
+        row_list_init = [self.label_3,self.label_4]
+        self.label_list.append(row_list_init)
+        formlayout = QGridLayout()
+        for i in range(5):
+            row_list=[]
+            for j in range(len(self.word_table[i])):
+                label=QLabel(self.word_table[i][j])
+                label.setStyleSheet(self.border_b)
+                formlayout.addWidget(label,i,j)
+                
+                row_list.append(label)
+            self.label_list.append(row_list)
+        self.widget.setLayout(formlayout) 
+
+    def keyPressEvent(self,e):
+        global idnum
+        if e.key() == Qt.Key_G:
+            num=0
+            self.login = loginidwindow()   
+            self.login.show()
+            self.close()
+        elif e.key() == Qt.Key_S:
+            if self.x < len(self.label_list)-1 and self.y < len(self.label_list[self.x+1]):
+                if self.x==0 and self.y==0:
+                    self.label_list[self.x][self.y].setStyleSheet(self.border_g)
+                elif self.x==0 and self.y==1:
+                    self.label_list[self.x][self.y].setStyleSheet(self.border_r)
+                else:
+                    self.label_list[self.x][self.y].setStyleSheet(self.border_b)
+                self.x+=1
+                self.label_list[self.x][self.y].setStyleSheet(self.border_s)
+        elif e.key() == Qt.Key_W:
+            if self.x > 0 and self.y < len(self.label_list[self.x-1]):
+                self.label_list[self.x][self.y].setStyleSheet(self.border_b)
+                self.x-=1
+                if self.x==0 and self.y==0:
+                    self.label_list[self.x][self.y].setStyleSheet(self.border_gs)
+                elif self.x==0 and self.y==1:
+                    self.label_list[self.x][self.y].setStyleSheet(self.border_rs)
+                else:
+                    self.label_list[self.x][self.y].setStyleSheet(self.border_s)
+        elif e.key() == Qt.Key_D:
+            if self.y == len(self.label_list[self.x])-1:
+                self.label_list[self.x][self.y].setStyleSheet(self.border_b)
+                self.x=0
+                self.y=0
+                self.label_list[self.x][self.y].setStyleSheet(self.border_gs)
+            if self.y < len(self.label_list[self.x])-1:
+                if self.x==0:
+                    if self.y==0:
+                        self.label_list[self.x][self.y].setStyleSheet(self.border_g)
+                        self.y+=1
+                        self.label_list[self.x][self.y].setStyleSheet(self.border_rs)
+                else:
+                    self.label_list[self.x][self.y].setStyleSheet(self.border_b)
+                    self.y+=1
+                    self.label_list[self.x][self.y].setStyleSheet(self.border_s)
+        elif e.key() == Qt.Key_A:
+            if self.y==0:
+                self.label_list[self.x][self.y].setStyleSheet(self.border_b)
+                self.x=0
+                self.y=0
+                self.label_list[self.x][self.y].setStyleSheet(self.border_gs)
+            if self.y > 0:
+                if self.x==0:
+                    if self.y==1:
+                        self.label_list[self.x][self.y].setStyleSheet(self.border_r)
+                        self.y-=1
+                        self.label_list[self.x][self.y].setStyleSheet(self.border_gs)
+                else:
+                    self.label_list[self.x][self.y].setStyleSheet(self.border_b)
+                    self.y-=1
+                    self.label_list[self.x][self.y].setStyleSheet(self.border_s)
+        elif e.key() == Qt.Key_F:
+            if self.x >0:
+                self.text = self.word_table[self.x-1][self.y]
+                for key, value in self.cons_all.items():
+                    if value == self.text:
+                        self.label_text += key
+                self.label.setText(jamo3(self.label_text))                
+            elif self.x == 0 and self.y == 1:
+                self.text = ''
+                self.label_text = ''
+                self.label.setText(self.text)
+            elif self.x == 0 and self.y == 0:
+                sock.sendall(bytes("login--"+self.idText+"--"+self.label.text()+"\n",'UTF-8'))
+                data = sock.recv(10)
+                a = str(data.decode())
+                a = a[0:1]
+                if int(a) == 0:
+                    idnum = int(a)
+                    self.second = warningwindow('로그인 실패')    
+                    self.second.exec()
+                    self.main = WindowClass()    
+                    self.main.show()
+                    self.close()
+                elif int(a) > 0:
+                    idnum = int(a)
+                    self.second = warningwindow('로그인 성공')    
+                    self.second.exec()
+                    self.main = WindowClass()    
+                    self.main.show()
+                    self.close()          
+                
 
 #분류선택
 class word1window(QDialog,QWidget,form_word1window):
@@ -212,7 +383,6 @@ class word1window(QDialog,QWidget,form_word1window):
     y=0
     border_s = 'font: 20pt "AcadEref"; border-color: rgb(0,21,209); \nbackground-color: rgb(170, 242, 248);\nborder-style: solid;\nborder-width: 2px;\nborder-radius: 10px;'
     border_b = 'font: 20pt "AcadEref"; border-color: rgb(170,242,248); \nbackground-color: rgb(170, 242, 248);\nborder-style: solid;\nborder-width: 2px;\nborder-radius: 10px;'
-
 
     def __init__(self):
         super(word1window,self).__init__()
@@ -252,6 +422,7 @@ class word1window(QDialog,QWidget,form_word1window):
                 check=0
                 sock.sendall(bytes(str(i+1)+"--"+str(idnum)+"\n",'UTF-8'))
                 data = sock.recv(1000000)
+                
                 list2 = []
                 a = str(data.decode())
                 result = a[:-2]
@@ -595,7 +766,8 @@ class word2window(QDialog,QWidget,form_word2window):
             elif self.x == 0 and self.y == 1:
                 self.text = ''
                 self.text_label.setText(self.text)
-        
+
+#자모결합함수                
 def jamo3(text2):
     cons = {'r':'ㄱ', 'R':'ㄲ', 's':'ㄴ', 'e':'ㄷ', 'E':'ㄸ', 'f':'ㄹ', 'a':'ㅁ', 'q':'ㅂ', 'Q':'ㅃ', 't':'ㅅ', 'T':'ㅆ',
            'd':'ㅇ', 'w':'ㅈ', 'W':'ㅉ', 'c':'ㅊ', 'z':'ㅋ', 'x':'ㅌ', 'v':'ㅍ', 'g':'ㅎ'}
