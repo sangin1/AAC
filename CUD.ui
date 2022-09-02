@@ -16,28 +16,12 @@
   <property name="styleSheet">
    <string notr="true">background-color: rgb(203, 250, 255);</string>
   </property>
-  <widget class="QLabel" name="label">
+  <widget class="QLabel" name="label_1">
    <property name="geometry">
     <rect>
-     <x>70</x>
-     <y>160</y>
-     <width>581</width>
-     <height>80</height>
-    </rect>
-   </property>
-   <property name="styleSheet">
-    <string notr="true">background-color: rgb(255, 255, 255);</string>
-   </property>
-   <property name="text">
-    <string/>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label_2">
-   <property name="geometry">
-    <rect>
-     <x>70</x>
-     <y>70</y>
-     <width>471</width>
+     <x>420</x>
+     <y>230</y>
+     <width>151</width>
      <height>60</height>
     </rect>
    </property>
@@ -47,17 +31,49 @@
      <pointsize>20</pointsize>
     </font>
    </property>
+   <property name="styleSheet">
+    <string notr="true">border-color: rgb(170, 242, 248); 
+background-color: rgb(170, 242, 248);
+border-style: solid;
+border-width: 2px;
+border-radius: 10px;</string>
+   </property>
    <property name="text">
-    <string>비밀번호 입력</string>
+    <string>단어추가</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label">
+   <property name="geometry">
+    <rect>
+     <x>350</x>
+     <y>90</y>
+     <width>321</width>
+     <height>71</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>AcadEref</family>
+     <pointsize>20</pointsize>
+    </font>
+   </property>
+   <property name="text">
+    <string>단어말히기 단어편집</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
    </property>
   </widget>
   <widget class="QLabel" name="label_3">
    <property name="geometry">
     <rect>
-     <x>710</x>
-     <y>160</y>
-     <width>90</width>
-     <height>70</height>
+     <x>420</x>
+     <y>460</y>
+     <width>151</width>
+     <height>60</height>
     </rect>
    </property>
    <property name="font">
@@ -67,23 +83,26 @@
     </font>
    </property>
    <property name="styleSheet">
-    <string notr="true">background-color: rgb(0, 255, 0);
-border-radius: 30px;</string>
+    <string notr="true">border-color: rgb(170, 242, 248); 
+background-color: rgb(170, 242, 248);
+border-style: solid;
+border-width: 2px;
+border-radius: 10px;</string>
    </property>
    <property name="text">
-    <string>로그인</string>
+    <string>단어삭제</string>
    </property>
    <property name="alignment">
     <set>Qt::AlignCenter</set>
    </property>
   </widget>
-  <widget class="QLabel" name="label_4">
+  <widget class="QLabel" name="label_2">
    <property name="geometry">
     <rect>
-     <x>850</x>
-     <y>160</y>
-     <width>90</width>
-     <height>70</height>
+     <x>420</x>
+     <y>340</y>
+     <width>151</width>
+     <height>60</height>
     </rect>
    </property>
    <property name="font">
@@ -93,23 +112,17 @@ border-radius: 30px;</string>
     </font>
    </property>
    <property name="styleSheet">
-    <string notr="true">background-color: rgb(255, 69, 69);border-radius: 30px</string>
+    <string notr="true">border-color: rgb(170, 242, 248); 
+background-color: rgb(170, 242, 248);
+border-style: solid;
+border-width: 2px;
+border-radius: 10px;</string>
    </property>
    <property name="text">
-    <string>지우기</string>
+    <string>단어수정</string>
    </property>
    <property name="alignment">
     <set>Qt::AlignCenter</set>
-   </property>
-  </widget>
-  <widget class="QWidget" name="widget" native="true">
-   <property name="geometry">
-    <rect>
-     <x>60</x>
-     <y>260</y>
-     <width>881</width>
-     <height>391</height>
-    </rect>
    </property>
   </widget>
  </widget>

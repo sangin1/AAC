@@ -21,7 +21,7 @@
     <property name="geometry">
      <rect>
       <x>450</x>
-      <y>150</y>
+      <y>180</y>
       <width>151</width>
       <height>60</height>
      </rect>
@@ -50,7 +50,7 @@ border-radius: 10px;</string>
     <property name="geometry">
      <rect>
       <x>450</x>
-      <y>225</y>
+      <y>270</y>
       <width>150</width>
       <height>60</height>
      </rect>
@@ -79,7 +79,7 @@ background-color: rgb(170, 242, 248);</string>
     <property name="geometry">
      <rect>
       <x>450</x>
-      <y>300</y>
+      <y>360</y>
       <width>150</width>
       <height>60</height>
      </rect>
@@ -108,7 +108,7 @@ background-color: rgb(170, 242, 248);</string>
     <property name="geometry">
      <rect>
       <x>450</x>
-      <y>375</y>
+      <y>450</y>
       <width>150</width>
       <height>60</height>
      </rect>
@@ -129,6 +129,35 @@ background-color: rgb(170, 242, 248);</string>
     </property>
     <property name="text">
      <string>로그인</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_5">
+    <property name="geometry">
+     <rect>
+      <x>450</x>
+      <y>540</y>
+      <width>151</width>
+      <height>60</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>AcadEref</family>
+      <pointsize>20</pointsize>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">border-color: rgb(170, 242, 248); 
+background-color: rgb(170, 242, 248);
+border-style: solid;
+border-width: 2px;
+border-radius: 10px;</string>
+    </property>
+    <property name="text">
+     <string>단어편집</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>
