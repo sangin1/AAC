@@ -49,6 +49,7 @@ idnum=0
 class WindowClass(QMainWindow,QWidget, form_class):
     global idnum
     cus = 0
+    checkupdate = 0
     border_s = 'border-color: rgb(0,21,209); \nbackground-color: rgb(170, 242, 248);\nborder-style: solid;\nborder-width: 2px;\nborder-radius: 10px;'
     border_b = 'border-color: rgb(170, 242, 248); \nbackground-color: rgb(170, 242, 248);\nborder-style: solid;\nborder-width: 2px;\nborder-radius: 10px;'
     idCode = 0   
@@ -67,9 +68,11 @@ class WindowClass(QMainWindow,QWidget, form_class):
         if idnum == 0:
             self.label_list[3].setText('로그인')
             self.label_list[4].hide()
+            self.checkupdate = 0
         elif idnum > 0:
             self.label_list[3].setText('로그아웃')
             self.label_list[4].show()
+            self.checkupdate = 1
             
     def keyReleaseEvent(self,e):
         global idnum
@@ -97,7 +100,7 @@ class WindowClass(QMainWindow,QWidget, form_class):
                     idnum = 0
                     self.label_list[3].setText('로그인')
                     self.label_list[4].hide()
-            elif self.cus == 4:
+            elif self.cus == 4 and self.checkupdate == 1:
                 self.upin = selectfractwindow()   
                 self.upin.show()
                 self.close()
@@ -117,6 +120,915 @@ class warningwindow(QDialog,QWidget,warning_window):
         if e.key() == Qt.Key_F:
             self.close()
 
+#단어수정(입력)
+class updateword2window(QDialog,QWidget,login_pw_window):
+    word_table = [['ㄱ','ㄴ','ㄷ','ㄹ','ㅁ','ㅂ','ㅅ'],
+                  ['ㅇ','ㅈ','ㅊ','ㅋ','ㅌ','ㅍ','ㅎ'],
+                  ['ㄲ','ㄸ','ㅃ','ㅆ','ㅉ'],
+                  ['ㅏ','ㅓ','ㅗ','ㅜ','ㅡ','ㅣ','ㅒ'],
+                  ['ㅑ','ㅕ','ㅛ','ㅠ','ㅐ','ㅔ','ㅖ']]
+    cons_all= {'r':'ㄱ', 'R':'ㄲ', 's':'ㄴ', 'e':'ㄷ', 'E':'ㄸ', 'f':'ㄹ', 'a':'ㅁ', 'q':'ㅂ', 'Q':'ㅃ', 't':'ㅅ', 'T':'ㅆ',
+           'd':'ㅇ', 'w':'ㅈ', 'W':'ㅉ', 'c':'ㅊ', 'z':'ㅋ', 'x':'ㅌ', 'v':'ㅍ', 'g':'ㅎ','k':'ㅏ', 'o':'ㅐ', 'i':'ㅑ', 'O':'ㅒ', 'j':'ㅓ', 'p':'ㅔ', 'u':'ㅕ', 'P':'ㅖ', 'h':'ㅗ', 'hk':'ㅘ', 'ho':'ㅙ', 'hl':'ㅚ',
+           'y':'ㅛ', 'n':'ㅜ', 'b':'ㅠ',  'm':'ㅡ', 'l':'ㅣ'}            
+    x=1
+    y=0
+    text=''
+    idText=''
+    label_text=''
+    word=''
+    border_s = 'font: 20pt "AcadEref"; border-color: rgb(0,21,209); \nbackground-color: rgb(170, 242, 248);\nborder-style: solid;\nborder-width: 2px;\nborder-radius: 10px;'
+    border_b = 'font: 20pt "AcadEref"; border-color: rgb(170,242,248); \nbackground-color: rgb(170, 242, 248);\nborder-style: solid;\nborder-width: 2px;\nborder-radius: 10px;'
+    border_g = 'background-color: rgb(0, 255, 0);\nborder-radius: 30px;'
+    border_gs = 'background-color: rgb(0, 255, 0);\nborder-radius: 30px;border-color: rgb(0,21,209);border-style: solid;\nborder-width: 2px'
+    border_rs = 'background-color: rgb(255, 69, 69);\nborder-radius: 30px;border-color: rgb(0,21,209);border-style: solid;\nborder-width: 2px'
+    border_r = 'background-color: rgb(255, 69, 69);\nborder-radius: 30px;'
+    def __init__(self,idText2,w_name):
+        super(updateword2window,self).__init__()
+        self.initUi()
+        self.idText = idText2
+        self.word=w_name
+        self.label_list[1][0].setStyleSheet(self.border_s)
+        self.show()
+
+    def initUi(self):
+        self.setupUi(self)
+        self.label_2.setText('수정할 단어입력')
+        self.label_3.setText('수정')
+        self.label_list=[]
+        row_list_init = [self.label_3,self.label_4]
+        self.label_list.append(row_list_init)
+        formlayout = QGridLayout()
+        for i in range(5):
+            row_list=[]
+            for j in range(len(self.word_table[i])):
+                label=QLabel(self.word_table[i][j])
+                label.setStyleSheet(self.border_b)
+                formlayout.addWidget(label,i,j)
+                
+                row_list.append(label)
+            self.label_list.append(row_list)
+        self.widget.setLayout(formlayout) 
+
+    def keyReleaseEvent(self,e):
+        global idnum
+        if e.key() == Qt.Key_G:
+            num=0
+            self.login = selectfractwindow()   
+            self.login.show()
+            self.close()
+        elif e.key() == Qt.Key_S:
+            if self.x < len(self.label_list)-1 and self.y < len(self.label_list[self.x+1]):
+                if self.x==0 and self.y==0:
+                    self.label_list[self.x][self.y].setStyleSheet(self.border_g)
+                elif self.x==0 and self.y==1:
+                    self.label_list[self.x][self.y].setStyleSheet(self.border_r)
+                else:
+                    self.label_list[self.x][self.y].setStyleSheet(self.border_b)
+                self.x+=1
+                self.label_list[self.x][self.y].setStyleSheet(self.border_s)
+        elif e.key() == Qt.Key_W:
+            if self.x > 0 and self.y < len(self.label_list[self.x-1]):
+                self.label_list[self.x][self.y].setStyleSheet(self.border_b)
+                self.x-=1
+                if self.x==0 and self.y==0:
+                    self.label_list[self.x][self.y].setStyleSheet(self.border_gs)
+                elif self.x==0 and self.y==1:
+                    self.label_list[self.x][self.y].setStyleSheet(self.border_rs)
+                else:
+                    self.label_list[self.x][self.y].setStyleSheet(self.border_s)
+        elif e.key() == Qt.Key_D:
+            if self.y == len(self.label_list[self.x])-1:
+                self.label_list[self.x][self.y].setStyleSheet(self.border_b)
+                self.x=0
+                self.y=0
+                self.label_list[self.x][self.y].setStyleSheet(self.border_gs)
+            if self.y < len(self.label_list[self.x])-1:
+                if self.x==0:
+                    if self.y==0:
+                        self.label_list[self.x][self.y].setStyleSheet(self.border_g)
+                        self.y+=1
+                        self.label_list[self.x][self.y].setStyleSheet(self.border_rs)
+                else:
+                    self.label_list[self.x][self.y].setStyleSheet(self.border_b)
+                    self.y+=1
+                    self.label_list[self.x][self.y].setStyleSheet(self.border_s)
+        elif e.key() == Qt.Key_A:
+            if self.y==0:
+                self.label_list[self.x][self.y].setStyleSheet(self.border_b)
+                self.x=0
+                self.y=0
+                self.label_list[self.x][self.y].setStyleSheet(self.border_gs)
+            if self.y > 0:
+                if self.x==0:
+                    if self.y==1:
+                        self.label_list[self.x][self.y].setStyleSheet(self.border_r)
+                        self.y-=1
+                        self.label_list[self.x][self.y].setStyleSheet(self.border_gs)
+                else:
+                    self.label_list[self.x][self.y].setStyleSheet(self.border_b)
+                    self.y-=1
+                    self.label_list[self.x][self.y].setStyleSheet(self.border_s)
+        elif e.key() == Qt.Key_F:
+            if self.x >0:
+                self.text = self.word_table[self.x-1][self.y]
+                for key, value in self.cons_all.items():
+                    if value == self.text:
+                        self.label_text += key
+                self.label.setText(jamo3(self.label_text))                
+            elif self.x == 0 and self.y == 1:
+                self.text = ''
+                self.label_text = ''
+                self.label.setText(self.text)
+            elif self.x == 0 and self.y == 0:
+                sock.sendall(bytes("updateword--"+self.idText+"--"+self.label.text()+"--"+str(idnum)+"--"+self.word+"\n",'UTF-8'))
+                data = sock.recv(10)
+                a = str(data.decode())
+                a = a[0:1]
+                if int(a) == 0:
+                    self.second = warningwindow('실패')    
+                    self.second.exec()
+                    self.main = selectfractwindow()    
+                    self.main.show()
+                    self.close()
+                elif int(a) == 1:
+                    self.second = warningwindow('수정 성공')    
+                    self.second.exec()
+                    self.main = selectfractwindow()    
+                    self.main.show()
+                    self.close()
+                    
+#단어수정(선택)
+class updatewordwindow(QDialog,QWidget,form_word1window):
+    word_name=[]
+    fract_code=''
+    checksum = 0
+    x=0
+    y=0
+    border_s = 'font: 20pt "AcadEref"; border-color: rgb(0,21,209); \nbackground-color: rgb(170, 242, 248);\nborder-style: solid;\nborder-width: 2px;\nborder-radius: 10px;'
+    border_b = 'font: 20pt "AcadEref"; border-color: rgb(170,242,248); \nbackground-color: rgb(170, 242, 248);\nborder-style: solid;\nborder-width: 2px;\nborder-radius: 10px;'
+
+    def __init__(self,f_code,w_name):
+        super(updatewordwindow,self).__init__()
+        self.word_name = w_name
+        self.fract_code = f_code
+        self.initUi()
+        self.label_list[0][0].setStyleSheet(self.border_s)
+        self.label.setText('수정할 단어 선택')
+        self.show()
+
+    def initUi(self):
+        self.setupUi(self)
+        self.label_list=[]
+        formlayout = QGridLayout()
+        for i in range(len(self.word_name)):
+            row_list=[]
+            for j in range(len(self.word_name[i])):        
+                label=QLabel(self.word_name[i][j])
+                label.setAlignment(Qt.AlignCenter)
+                label.setStyleSheet(self.border_b)
+                formlayout.addWidget(label,i,j)
+                row_list.append(label)
+                
+            self.label_list.append(row_list)
+        if 2 < len(self.label_list):
+                for i in range(3,len(self.label_list)):
+                    for j in range(len(self.label_list[i])):
+                        self.label_list[i][j].hide()
+                
+        widget = QWidget()
+        widget.setLayout(formlayout) 
+        self.scrollArea.setWidget(widget)
+        self.scrollArea.setWidgetResizable(True)
+                       
+    def keyReleaseEvent(self,e):        
+        if e.key() == Qt.Key_G:
+            self.second = selectfractwindow()    
+            self.second.show()
+            self.close()
+        elif e.key() == Qt.Key_S:
+            if self.x < len(self.label_list)-1 and self.y < len(self.label_list[self.x+1]):
+                self.label_list[self.x][self.y].setStyleSheet(self.border_b)
+                self.x+=1
+
+                if len(self.label_list) > 2:
+                    for i in range(0,len(self.label_list)):
+                        for j in range(len(self.label_list[i])):
+                            self.label_list[i][j].hide()
+
+                    for i in range(self.x,self.x+2):
+                        if i < len(self.label_list):
+                            for j in range(len(self.label_list[i])):
+                                self.label_list[i][j].show()
+                else:
+                    for i in range(2):
+                        for j in range(len(self.label_list[i])):
+                            self.label_list[i][j].show()
+                            
+                self.label_list[self.x][self.y].setStyleSheet(self.border_s)
+        elif e.key() == Qt.Key_W:
+            if self.x > 0:
+                self.label_list[self.x][self.y].setStyleSheet(self.border_b)
+                self.x-=1
+                if self.y >= len(self.label_list[self.x]):
+                    self.y = len(self.label_list[self.x])-1                    
+               
+                self.label_list[self.x][self.y].setStyleSheet(self.border_s)
+                for i in range(0,len(self.label_list)):
+                    for j in range(len(self.label_list[i])):
+                        self.label_list[i][j].hide()
+                for i in range(self.x,self.x+2):
+                    if i < len(self.label_list):
+                        for j in range(len(self.label_list[i])):
+                            self.label_list[i][j].show()
+                    
+        elif e.key() == Qt.Key_D:
+            if self.y < len(self.label_list[self.x])-1:
+                self.label_list[self.x][self.y].setStyleSheet(self.border_b)
+                self.y+=1
+                self.label_list[self.x][self.y].setStyleSheet(self.border_s)
+        elif e.key() == Qt.Key_A:
+                self.label_list[self.x][self.y].setStyleSheet(self.border_b)
+                self.y-=1
+                self.label_list[self.x][self.y].setStyleSheet(self.border_s)
+        elif e.key() == Qt.Key_F:
+                self.main = updateword2window(self.fract_code,self.word_name[self.x][self.y])    
+                self.main.show()
+                self.close()
+                
+                    
+#단어삭제
+class delwordwindow(QDialog,QWidget,form_word1window):
+    word_name=[]
+    fract_code=''
+    checksum = 0
+    x=0
+    y=0
+    border_s = 'font: 20pt "AcadEref"; border-color: rgb(0,21,209); \nbackground-color: rgb(170, 242, 248);\nborder-style: solid;\nborder-width: 2px;\nborder-radius: 10px;'
+    border_b = 'font: 20pt "AcadEref"; border-color: rgb(170,242,248); \nbackground-color: rgb(170, 242, 248);\nborder-style: solid;\nborder-width: 2px;\nborder-radius: 10px;'
+
+    def __init__(self,f_code,w_name):
+        super(delwordwindow,self).__init__()
+        self.word_name = w_name
+        self.fract_code = f_code
+        self.initUi()
+        self.label_list[0][0].setStyleSheet(self.border_s)
+        self.label.setText('삭제할 단어 선택')
+        self.show()
+
+    def initUi(self):
+        self.setupUi(self)
+        self.label_list=[]
+        formlayout = QGridLayout()
+        for i in range(len(self.word_name)):
+            row_list=[]
+            for j in range(len(self.word_name[i])):        
+                label=QLabel(self.word_name[i][j])
+                label.setAlignment(Qt.AlignCenter)
+                label.setStyleSheet(self.border_b)
+                formlayout.addWidget(label,i,j)
+                row_list.append(label)
+                
+            self.label_list.append(row_list)
+        if 2 < len(self.label_list):
+                for i in range(3,len(self.label_list)):
+                    for j in range(len(self.label_list[i])):
+                        self.label_list[i][j].hide()
+                
+        widget = QWidget()
+        widget.setLayout(formlayout) 
+        self.scrollArea.setWidget(widget)
+        self.scrollArea.setWidgetResizable(True)
+                       
+    def keyReleaseEvent(self,e):
+        global idnum
+        if e.key() == Qt.Key_G:
+            self.second = selectfractwindow()    
+            self.second.show()
+            self.close()
+        elif e.key() == Qt.Key_S:
+            if self.x < len(self.label_list)-1 and self.y < len(self.label_list[self.x+1]):
+                self.label_list[self.x][self.y].setStyleSheet(self.border_b)
+                self.x+=1
+
+                if len(self.label_list) > 2:
+                    for i in range(0,len(self.label_list)):
+                        for j in range(len(self.label_list[i])):
+                            self.label_list[i][j].hide()
+
+                    for i in range(self.x,self.x+2):
+                        if i < len(self.label_list):
+                            for j in range(len(self.label_list[i])):
+                                self.label_list[i][j].show()
+                else:
+                    for i in range(2):
+                        for j in range(len(self.label_list[i])):
+                            self.label_list[i][j].show()
+                            
+                self.label_list[self.x][self.y].setStyleSheet(self.border_s)
+        elif e.key() == Qt.Key_W:
+            if self.x > 0:
+                self.label_list[self.x][self.y].setStyleSheet(self.border_b)
+                self.x-=1
+                if self.y >= len(self.label_list[self.x]):
+                    self.y = len(self.label_list[self.x])-1                    
+               
+                self.label_list[self.x][self.y].setStyleSheet(self.border_s)
+                for i in range(0,len(self.label_list)):
+                    for j in range(len(self.label_list[i])):
+                        self.label_list[i][j].hide()
+                for i in range(self.x,self.x+2):
+                    if i < len(self.label_list):
+                        for j in range(len(self.label_list[i])):
+                            self.label_list[i][j].show()
+                    
+        elif e.key() == Qt.Key_D:
+            if self.y < len(self.label_list[self.x])-1:
+                self.label_list[self.x][self.y].setStyleSheet(self.border_b)
+                self.y+=1
+                self.label_list[self.x][self.y].setStyleSheet(self.border_s)
+        elif e.key() == Qt.Key_A:
+                self.label_list[self.x][self.y].setStyleSheet(self.border_b)
+                self.y-=1
+                self.label_list[self.x][self.y].setStyleSheet(self.border_s)
+        elif e.key() == Qt.Key_F:            
+                sock.sendall(bytes("delword--"+self.fract_code+"--"+self.word_name[self.x][self.y]+"--"+str(idnum)+"\n",'UTF-8'))
+                data = sock.recv(10)
+                a = str(data.decode())
+                a = a[0:1]
+                if int(a) == 0:
+                    self.second = warningwindow('실패')    
+                    self.second.exec()
+                    self.main = selectfractwindow()    
+                    self.main.show()
+                    self.close()
+                elif int(a) == 1:
+                    self.second = warningwindow('삭제 성공')    
+                    self.second.exec()
+                    self.main = selectfractwindow()    
+                    self.main.show()
+                    self.close()
+            
+#단어추가
+class addwordwindow(QDialog,QWidget,login_pw_window):
+    word_table = [['ㄱ','ㄴ','ㄷ','ㄹ','ㅁ','ㅂ','ㅅ'],
+                  ['ㅇ','ㅈ','ㅊ','ㅋ','ㅌ','ㅍ','ㅎ'],
+                  ['ㄲ','ㄸ','ㅃ','ㅆ','ㅉ'],
+                  ['ㅏ','ㅓ','ㅗ','ㅜ','ㅡ','ㅣ','ㅒ'],
+                  ['ㅑ','ㅕ','ㅛ','ㅠ','ㅐ','ㅔ','ㅖ']]
+    cons_all= {'r':'ㄱ', 'R':'ㄲ', 's':'ㄴ', 'e':'ㄷ', 'E':'ㄸ', 'f':'ㄹ', 'a':'ㅁ', 'q':'ㅂ', 'Q':'ㅃ', 't':'ㅅ', 'T':'ㅆ',
+           'd':'ㅇ', 'w':'ㅈ', 'W':'ㅉ', 'c':'ㅊ', 'z':'ㅋ', 'x':'ㅌ', 'v':'ㅍ', 'g':'ㅎ','k':'ㅏ', 'o':'ㅐ', 'i':'ㅑ', 'O':'ㅒ', 'j':'ㅓ', 'p':'ㅔ', 'u':'ㅕ', 'P':'ㅖ', 'h':'ㅗ', 'hk':'ㅘ', 'ho':'ㅙ', 'hl':'ㅚ',
+           'y':'ㅛ', 'n':'ㅜ', 'b':'ㅠ',  'm':'ㅡ', 'l':'ㅣ'}            
+    x=1
+    y=0
+    text=''
+    idText=''
+    label_text=''
+    border_s = 'font: 20pt "AcadEref"; border-color: rgb(0,21,209); \nbackground-color: rgb(170, 242, 248);\nborder-style: solid;\nborder-width: 2px;\nborder-radius: 10px;'
+    border_b = 'font: 20pt "AcadEref"; border-color: rgb(170,242,248); \nbackground-color: rgb(170, 242, 248);\nborder-style: solid;\nborder-width: 2px;\nborder-radius: 10px;'
+    border_g = 'background-color: rgb(0, 255, 0);\nborder-radius: 30px;'
+    border_gs = 'background-color: rgb(0, 255, 0);\nborder-radius: 30px;border-color: rgb(0,21,209);border-style: solid;\nborder-width: 2px'
+    border_rs = 'background-color: rgb(255, 69, 69);\nborder-radius: 30px;border-color: rgb(0,21,209);border-style: solid;\nborder-width: 2px'
+    border_r = 'background-color: rgb(255, 69, 69);\nborder-radius: 30px;'
+    def __init__(self,idText2):
+        super(addwordwindow,self).__init__()
+        self.initUi()
+        self.idText = idText2
+        self.label_list[1][0].setStyleSheet(self.border_s)
+        self.show()
+
+    def initUi(self):
+        self.setupUi(self)
+        self.label_2.setText('단어입력')
+        self.label_3.setText('추가')
+        self.label_list=[]
+        row_list_init = [self.label_3,self.label_4]
+        self.label_list.append(row_list_init)
+        formlayout = QGridLayout()
+        for i in range(5):
+            row_list=[]
+            for j in range(len(self.word_table[i])):
+                label=QLabel(self.word_table[i][j])
+                label.setStyleSheet(self.border_b)
+                formlayout.addWidget(label,i,j)
+                
+                row_list.append(label)
+            self.label_list.append(row_list)
+        self.widget.setLayout(formlayout) 
+
+    def keyReleaseEvent(self,e):
+        global idnum
+        if e.key() == Qt.Key_G:
+            num=0
+            self.login = selectfractwindow()   
+            self.login.show()
+            self.close()
+        elif e.key() == Qt.Key_S:
+            if self.x < len(self.label_list)-1 and self.y < len(self.label_list[self.x+1]):
+                if self.x==0 and self.y==0:
+                    self.label_list[self.x][self.y].setStyleSheet(self.border_g)
+                elif self.x==0 and self.y==1:
+                    self.label_list[self.x][self.y].setStyleSheet(self.border_r)
+                else:
+                    self.label_list[self.x][self.y].setStyleSheet(self.border_b)
+                self.x+=1
+                self.label_list[self.x][self.y].setStyleSheet(self.border_s)
+        elif e.key() == Qt.Key_W:
+            if self.x > 0 and self.y < len(self.label_list[self.x-1]):
+                self.label_list[self.x][self.y].setStyleSheet(self.border_b)
+                self.x-=1
+                if self.x==0 and self.y==0:
+                    self.label_list[self.x][self.y].setStyleSheet(self.border_gs)
+                elif self.x==0 and self.y==1:
+                    self.label_list[self.x][self.y].setStyleSheet(self.border_rs)
+                else:
+                    self.label_list[self.x][self.y].setStyleSheet(self.border_s)
+        elif e.key() == Qt.Key_D:
+            if self.y == len(self.label_list[self.x])-1:
+                self.label_list[self.x][self.y].setStyleSheet(self.border_b)
+                self.x=0
+                self.y=0
+                self.label_list[self.x][self.y].setStyleSheet(self.border_gs)
+            if self.y < len(self.label_list[self.x])-1:
+                if self.x==0:
+                    if self.y==0:
+                        self.label_list[self.x][self.y].setStyleSheet(self.border_g)
+                        self.y+=1
+                        self.label_list[self.x][self.y].setStyleSheet(self.border_rs)
+                else:
+                    self.label_list[self.x][self.y].setStyleSheet(self.border_b)
+                    self.y+=1
+                    self.label_list[self.x][self.y].setStyleSheet(self.border_s)
+        elif e.key() == Qt.Key_A:
+            if self.y==0:
+                self.label_list[self.x][self.y].setStyleSheet(self.border_b)
+                self.x=0
+                self.y=0
+                self.label_list[self.x][self.y].setStyleSheet(self.border_gs)
+            if self.y > 0:
+                if self.x==0:
+                    if self.y==1:
+                        self.label_list[self.x][self.y].setStyleSheet(self.border_r)
+                        self.y-=1
+                        self.label_list[self.x][self.y].setStyleSheet(self.border_gs)
+                else:
+                    self.label_list[self.x][self.y].setStyleSheet(self.border_b)
+                    self.y-=1
+                    self.label_list[self.x][self.y].setStyleSheet(self.border_s)
+        elif e.key() == Qt.Key_F:
+            if self.x >0:
+                self.text = self.word_table[self.x-1][self.y]
+                for key, value in self.cons_all.items():
+                    if value == self.text:
+                        self.label_text += key
+                self.label.setText(jamo3(self.label_text))                
+            elif self.x == 0 and self.y == 1:
+                self.text = ''
+                self.label_text = ''
+                self.label.setText(self.text)
+            elif self.x == 0 and self.y == 0:
+                sock.sendall(bytes("addword--"+self.idText+"--"+self.label.text()+"--"+str(idnum)+"\n",'UTF-8'))
+                data = sock.recv(10)
+                a = str(data.decode())
+                a = a[0:1]
+                if int(a) == 0:
+                    self.second = warningwindow('실패')    
+                    self.second.exec()
+                    self.main = selectfractwindow()    
+                    self.main.show()
+                    self.close()
+                elif int(a) == 1:
+                    self.second = warningwindow('추가 성공')    
+                    self.second.exec()
+                    self.main = selectfractwindow()    
+                    self.main.show()
+                    self.close()
+                    
+#단어cud선택
+class wordCUDwindow(QDialog,QWidget, cud_window):
+    cus = 0
+    fract_name=[]
+    word_name=[]
+    fract_code=[]
+    x=0
+    y=0
+    border_s = 'border-color: rgb(0,21,209); \nbackground-color: rgb(170, 242, 248);\nborder-style: solid;\nborder-width: 2px;\nborder-radius: 10px;'
+    border_b = 'border-color: rgb(170, 242, 248); \nbackground-color: rgb(170, 242, 248);\nborder-style: solid;\nborder-width: 2px;\nborder-radius: 10px;'
+    idCode = 0   
+    def __init__(self,f_name,w_name,f_code,x2,y2):
+        super(wordCUDwindow,self).__init__()
+        self.fract_name = f_name
+        self.fract_code = f_code
+        self.word_name = w_name
+        self.x=x2
+        self.y=y2
+        self.setupUi(self)
+        self.cus=0
+        self.label_list=[]
+        self.label_list.append(self.label_1)
+        self.label_list.append(self.label_2)
+        self.label_list.append(self.label_3)
+        self.label_list[self.cus].setStyleSheet(self.border_s)
+        
+    def keyReleaseEvent(self,e):
+        if e.key() == Qt.Key_W:
+            if self.cus > 0:
+                self.label_list[self.cus].setStyleSheet(self.border_b)
+                self.cus-=1
+                self.label_list[self.cus].setStyleSheet(self.border_s)
+        elif e.key() == Qt.Key_G:
+            self.second = selectfractwindow()    
+            self.second.show()
+            self.close()
+        elif e.key() == Qt.Key_S:
+            if self.cus < 2:
+                self.label_list[self.cus].setStyleSheet(self.border_b)
+                self.cus+=1
+                self.label_list[self.cus].setStyleSheet(self.border_s)
+        elif e.key() == Qt.Key_F:
+            if self.cus == 0:
+                self.second = addwordwindow(self.fract_code[self.x][self.y])    
+                self.second.show()
+                self.close()
+            elif self.cus == 1:
+                self.upin = updatewordwindow(self.fract_code[self.x][self.y],self.word_name[self.x][self.y])   
+                self.upin.show()
+                self.close()
+            elif self.cus == 2:
+                self.upin = delwordwindow(self.fract_code[self.x][self.y],self.word_name[self.x][self.y])   
+                self.upin.show()
+                self.close()
+                
+#분류수정(입력)
+class updatefractwordwindow(QDialog,QWidget,login_pw_window):
+    word_table = [['ㄱ','ㄴ','ㄷ','ㄹ','ㅁ','ㅂ','ㅅ'],
+                  ['ㅇ','ㅈ','ㅊ','ㅋ','ㅌ','ㅍ','ㅎ'],
+                  ['ㄲ','ㄸ','ㅃ','ㅆ','ㅉ'],
+                  ['ㅏ','ㅓ','ㅗ','ㅜ','ㅡ','ㅣ','ㅒ'],
+                  ['ㅑ','ㅕ','ㅛ','ㅠ','ㅐ','ㅔ','ㅖ']]
+    cons_all= {'r':'ㄱ', 'R':'ㄲ', 's':'ㄴ', 'e':'ㄷ', 'E':'ㄸ', 'f':'ㄹ', 'a':'ㅁ', 'q':'ㅂ', 'Q':'ㅃ', 't':'ㅅ', 'T':'ㅆ',
+           'd':'ㅇ', 'w':'ㅈ', 'W':'ㅉ', 'c':'ㅊ', 'z':'ㅋ', 'x':'ㅌ', 'v':'ㅍ', 'g':'ㅎ','k':'ㅏ', 'o':'ㅐ', 'i':'ㅑ', 'O':'ㅒ', 'j':'ㅓ', 'p':'ㅔ', 'u':'ㅕ', 'P':'ㅖ', 'h':'ㅗ', 'hk':'ㅘ', 'ho':'ㅙ', 'hl':'ㅚ',
+           'y':'ㅛ', 'n':'ㅜ', 'b':'ㅠ',  'm':'ㅡ', 'l':'ㅣ'}            
+    x=1
+    y=0
+    text=''
+    idText=''
+    label_text=''
+    border_s = 'font: 20pt "AcadEref"; border-color: rgb(0,21,209); \nbackground-color: rgb(170, 242, 248);\nborder-style: solid;\nborder-width: 2px;\nborder-radius: 10px;'
+    border_b = 'font: 20pt "AcadEref"; border-color: rgb(170,242,248); \nbackground-color: rgb(170, 242, 248);\nborder-style: solid;\nborder-width: 2px;\nborder-radius: 10px;'
+    border_g = 'background-color: rgb(0, 255, 0);\nborder-radius: 30px;'
+    border_gs = 'background-color: rgb(0, 255, 0);\nborder-radius: 30px;border-color: rgb(0,21,209);border-style: solid;\nborder-width: 2px'
+    border_rs = 'background-color: rgb(255, 69, 69);\nborder-radius: 30px;border-color: rgb(0,21,209);border-style: solid;\nborder-width: 2px'
+    border_r = 'background-color: rgb(255, 69, 69);\nborder-radius: 30px;'
+    def __init__(self,idText2):
+        super(updatefractwordwindow,self).__init__()
+        self.initUi()
+        self.idText = idText2
+        self.label_list[1][0].setStyleSheet(self.border_s)
+        self.show()
+
+    def initUi(self):
+        self.setupUi(self)
+        self.label_2.setText('수정할 값 입력')
+        self.label_3.setText('수정')
+        self.label_list=[]
+        row_list_init = [self.label_3,self.label_4]
+        self.label_list.append(row_list_init)
+        formlayout = QGridLayout()
+        for i in range(5):
+            row_list=[]
+            for j in range(len(self.word_table[i])):
+                label=QLabel(self.word_table[i][j])
+                label.setStyleSheet(self.border_b)
+                formlayout.addWidget(label,i,j)
+                
+                row_list.append(label)
+            self.label_list.append(row_list)
+        self.widget.setLayout(formlayout) 
+
+    def keyReleaseEvent(self,e):
+        global idnum
+        if e.key() == Qt.Key_G:
+            num=0
+            self.login = selectfractwindow()   
+            self.login.show()
+            self.close()
+        elif e.key() == Qt.Key_S:
+            if self.x < len(self.label_list)-1 and self.y < len(self.label_list[self.x+1]):
+                if self.x==0 and self.y==0:
+                    self.label_list[self.x][self.y].setStyleSheet(self.border_g)
+                elif self.x==0 and self.y==1:
+                    self.label_list[self.x][self.y].setStyleSheet(self.border_r)
+                else:
+                    self.label_list[self.x][self.y].setStyleSheet(self.border_b)
+                self.x+=1
+                self.label_list[self.x][self.y].setStyleSheet(self.border_s)
+        elif e.key() == Qt.Key_W:
+            if self.x > 0 and self.y < len(self.label_list[self.x-1]):
+                self.label_list[self.x][self.y].setStyleSheet(self.border_b)
+                self.x-=1
+                if self.x==0 and self.y==0:
+                    self.label_list[self.x][self.y].setStyleSheet(self.border_gs)
+                elif self.x==0 and self.y==1:
+                    self.label_list[self.x][self.y].setStyleSheet(self.border_rs)
+                else:
+                    self.label_list[self.x][self.y].setStyleSheet(self.border_s)
+        elif e.key() == Qt.Key_D:
+            if self.y == len(self.label_list[self.x])-1:
+                self.label_list[self.x][self.y].setStyleSheet(self.border_b)
+                self.x=0
+                self.y=0
+                self.label_list[self.x][self.y].setStyleSheet(self.border_gs)
+            if self.y < len(self.label_list[self.x])-1:
+                if self.x==0:
+                    if self.y==0:
+                        self.label_list[self.x][self.y].setStyleSheet(self.border_g)
+                        self.y+=1
+                        self.label_list[self.x][self.y].setStyleSheet(self.border_rs)
+                else:
+                    self.label_list[self.x][self.y].setStyleSheet(self.border_b)
+                    self.y+=1
+                    self.label_list[self.x][self.y].setStyleSheet(self.border_s)
+        elif e.key() == Qt.Key_A:
+            if self.y==0:
+                self.label_list[self.x][self.y].setStyleSheet(self.border_b)
+                self.x=0
+                self.y=0
+                self.label_list[self.x][self.y].setStyleSheet(self.border_gs)
+            if self.y > 0:
+                if self.x==0:
+                    if self.y==1:
+                        self.label_list[self.x][self.y].setStyleSheet(self.border_r)
+                        self.y-=1
+                        self.label_list[self.x][self.y].setStyleSheet(self.border_gs)
+                else:
+                    self.label_list[self.x][self.y].setStyleSheet(self.border_b)
+                    self.y-=1
+                    self.label_list[self.x][self.y].setStyleSheet(self.border_s)
+        elif e.key() == Qt.Key_F:
+            if self.x >0:
+                self.text = self.word_table[self.x-1][self.y]
+                for key, value in self.cons_all.items():
+                    if value == self.text:
+                        self.label_text += key
+                self.label.setText(jamo3(self.label_text))                
+            elif self.x == 0 and self.y == 1:
+                self.text = ''
+                self.label_text = ''
+                self.label.setText(self.text)
+            elif self.x == 0 and self.y == 0:
+                sock.sendall(bytes("updateclass--"+self.idText+"--"+self.label.text()+"--"+str(idnum)+"\n",'UTF-8'))
+                data = sock.recv(10)
+                a = str(data.decode())
+                a = a[0:1]
+                if int(a) == 0:
+                    self.second = warningwindow('실패')    
+                    self.second.exec()
+                    self.main = selectfractwindow()    
+                    self.main.show()
+                    self.close()
+                elif int(a) == 1:
+                    self.second = warningwindow('추가 성공')    
+                    self.second.exec()
+                    self.main = selectfractwindow()    
+                    self.main.show()
+                    self.close()
+#분류수정선택
+class updatefractwindow(QDialog,QWidget,form_word1window):
+    fract_name=[]
+    fract_code=[]
+    checksum = 0
+    x=0
+    y=0
+    border_s = 'font: 20pt "AcadEref"; border-color: rgb(0,21,209); \nbackground-color: rgb(170, 242, 248);\nborder-style: solid;\nborder-width: 2px;\nborder-radius: 10px;'
+    border_b = 'font: 20pt "AcadEref"; border-color: rgb(170,242,248); \nbackground-color: rgb(170, 242, 248);\nborder-style: solid;\nborder-width: 2px;\nborder-radius: 10px;'
+
+    def __init__(self,f_name,f_code):
+        super(updatefractwindow,self).__init__()
+        self.fract_name = f_name
+        self.fract_code = f_code
+        self.initUi()
+        self.label_list[0][0].setStyleSheet(self.border_s)
+        self.label.setText('수정할 분류 선택')
+        self.show()
+
+    def initUi(self):
+        self.setupUi(self)
+        self.label_list=[]
+        formlayout = QGridLayout()
+        for i in range(len(self.fract_name)):
+            row_list=[]
+            for j in range(len(self.fract_name[i])):        
+                label=QLabel(self.fract_name[i][j])
+                label.setAlignment(Qt.AlignCenter)
+                label.setStyleSheet(self.border_b)
+                formlayout.addWidget(label,i,j)
+                row_list.append(label)
+                
+            self.label_list.append(row_list)
+        if 2 < len(self.label_list):
+                for i in range(3,len(self.label_list)):
+                    for j in range(len(self.label_list[i])):
+                        self.label_list[i][j].hide()
+                
+        widget = QWidget()
+        widget.setLayout(formlayout) 
+        self.scrollArea.setWidget(widget)
+        self.scrollArea.setWidgetResizable(True)
+                       
+    def keyReleaseEvent(self,e):        
+        if e.key() == Qt.Key_G:
+            self.second = selectfractwindow()    
+            self.second.show()
+            self.close()
+        elif e.key() == Qt.Key_S:
+            if self.x < len(self.label_list)-1 and self.y < len(self.label_list[self.x+1]):
+                self.label_list[self.x][self.y].setStyleSheet(self.border_b)
+                self.x+=1
+
+                if len(self.label_list) > 2:
+                    for i in range(0,len(self.label_list)):
+                        for j in range(len(self.label_list[i])):
+                            self.label_list[i][j].hide()
+
+                    for i in range(self.x,self.x+2):
+                        if i < len(self.label_list):
+                            for j in range(len(self.label_list[i])):
+                                self.label_list[i][j].show()
+                else:
+                    for i in range(2):
+                        for j in range(len(self.label_list[i])):
+                            self.label_list[i][j].show()
+                            
+                self.label_list[self.x][self.y].setStyleSheet(self.border_s)
+        elif e.key() == Qt.Key_W:
+            if self.x > 0:
+                self.label_list[self.x][self.y].setStyleSheet(self.border_b)
+                self.x-=1
+                if self.y >= len(self.label_list[self.x]):
+                    self.y = len(self.label_list[self.x])-1                    
+               
+                self.label_list[self.x][self.y].setStyleSheet(self.border_s)
+                for i in range(0,len(self.label_list)):
+                    for j in range(len(self.label_list[i])):
+                        self.label_list[i][j].hide()
+                for i in range(self.x,self.x+2):
+                    if i < len(self.label_list):
+                        for j in range(len(self.label_list[i])):
+                            self.label_list[i][j].show()
+                    
+        elif e.key() == Qt.Key_D:
+            if self.y < len(self.label_list[self.x])-1:
+                self.label_list[self.x][self.y].setStyleSheet(self.border_b)
+                self.y+=1
+                self.label_list[self.x][self.y].setStyleSheet(self.border_s)
+        elif e.key() == Qt.Key_A:
+                self.label_list[self.x][self.y].setStyleSheet(self.border_b)
+                self.y-=1
+                self.label_list[self.x][self.y].setStyleSheet(self.border_s)
+        elif e.key() == Qt.Key_F:
+            self.second = updatefractwordwindow(self.fract_code[self.x][self.y])
+            self.second.exec()
+            self.close()
+            
+#분류삭제확인창
+class delfractchecksumwindow(QDialog,QWidget,checksum_window):
+    cus=1
+    code=''
+    border_g = 'background-color: rgb(0, 255, 0);\nborder-radius: 30px;'
+    border_gs = 'background-color: rgb(0, 255, 0);\nborder-radius: 30px;border-color: rgb(0,21,209);border-style: solid;\nborder-width: 2px'
+    border_rs = 'background-color: rgb(255, 69, 69);\nborder-radius: 30px;border-color: rgb(0,21,209);border-style: solid;\nborder-width: 2px'
+    border_r = 'background-color: rgb(255, 69, 69);\nborder-radius: 30px;'
+    def __init__(self,text,code2):
+        super(delfractchecksumwindow,self).__init__()
+        self.code = code2
+        self.initUi()
+        self.label_3.setText(text)
+        self.show()
+    def initUi(self):
+        self.setupUi(self)
+        self.label_2.setStyleSheet(self.border_rs)
+        
+    def keyReleaseEvent(self,e):
+        global idnum
+        if e.key() == Qt.Key_F:
+            if self.cus == 0:
+                sock.sendall(bytes("delclass--"+str(idnum)+"--"+self.code+"\n",'UTF-8'))
+                self.main = selectfractwindow()    
+                self.main.show()
+                self.close()
+            elif self.cus == 1:
+                self.main = selectfractwindow()    
+                self.main.show()
+                self.close()
+        elif e.key() == Qt.Key_A:
+            if self.cus == 1:
+                self.label_2.setStyleSheet(self.border_r)
+                self.cus = self.cus - 1
+                self.label.setStyleSheet(self.border_gs)
+        elif e.key() == Qt.Key_D:
+            if self.cus == 0:
+                self.label.setStyleSheet(self.border_g)
+                self.cus = self.cus + 1
+                self.label_2.setStyleSheet(self.border_rs)
+
+#분류삭제
+class delfractwindow(QDialog,QWidget,form_word1window):
+    fract_name=[]
+    fract_code=[]
+    checksum = 0
+    x=0
+    y=0
+    border_s = 'font: 20pt "AcadEref"; border-color: rgb(0,21,209); \nbackground-color: rgb(170, 242, 248);\nborder-style: solid;\nborder-width: 2px;\nborder-radius: 10px;'
+    border_b = 'font: 20pt "AcadEref"; border-color: rgb(170,242,248); \nbackground-color: rgb(170, 242, 248);\nborder-style: solid;\nborder-width: 2px;\nborder-radius: 10px;'
+
+    def __init__(self,f_name,f_code):
+        super(delfractwindow,self).__init__()
+        self.fract_name = f_name
+        self.fract_code = f_code
+        self.initUi()
+        self.label_list[0][0].setStyleSheet(self.border_s)
+        self.label.setText('삭제할 분류 선택')
+        self.show()
+
+    def initUi(self):
+        self.setupUi(self)
+        self.label_list=[]
+        formlayout = QGridLayout()
+        for i in range(len(self.fract_name)):
+            row_list=[]
+            for j in range(len(self.fract_name[i])):        
+                label=QLabel(self.fract_name[i][j])
+                label.setAlignment(Qt.AlignCenter)
+                label.setStyleSheet(self.border_b)
+                formlayout.addWidget(label,i,j)
+                row_list.append(label)
+                
+            self.label_list.append(row_list)
+        if 2 < len(self.label_list):
+                for i in range(3,len(self.label_list)):
+                    for j in range(len(self.label_list[i])):
+                        self.label_list[i][j].hide()
+                
+        widget = QWidget()
+        widget.setLayout(formlayout) 
+        self.scrollArea.setWidget(widget)
+        self.scrollArea.setWidgetResizable(True)
+                       
+    def keyReleaseEvent(self,e):        
+        if e.key() == Qt.Key_G:
+            self.second = selectfractwindow()    
+            self.second.show()
+            self.close()
+        elif e.key() == Qt.Key_S:
+            if self.x < len(self.label_list)-1 and self.y < len(self.label_list[self.x+1]):
+                self.label_list[self.x][self.y].setStyleSheet(self.border_b)
+                self.x+=1
+
+                if len(self.label_list) > 2:
+                    for i in range(0,len(self.label_list)):
+                        for j in range(len(self.label_list[i])):
+                            self.label_list[i][j].hide()
+
+                    for i in range(self.x,self.x+2):
+                        if i < len(self.label_list):
+                            for j in range(len(self.label_list[i])):
+                                self.label_list[i][j].show()
+                else:
+                    for i in range(2):
+                        for j in range(len(self.label_list[i])):
+                            self.label_list[i][j].show()
+                            
+                self.label_list[self.x][self.y].setStyleSheet(self.border_s)
+        elif e.key() == Qt.Key_W:
+            if self.x > 0:
+                self.label_list[self.x][self.y].setStyleSheet(self.border_b)
+                self.x-=1
+                if self.y >= len(self.label_list[self.x]):
+                    self.y = len(self.label_list[self.x])-1                    
+               
+                self.label_list[self.x][self.y].setStyleSheet(self.border_s)
+                for i in range(0,len(self.label_list)):
+                    for j in range(len(self.label_list[i])):
+                        self.label_list[i][j].hide()
+                for i in range(self.x,self.x+2):
+                    if i < len(self.label_list):
+                        for j in range(len(self.label_list[i])):
+                            self.label_list[i][j].show()
+                    
+        elif e.key() == Qt.Key_D:
+            if self.y < len(self.label_list[self.x])-1:
+                self.label_list[self.x][self.y].setStyleSheet(self.border_b)
+                self.y+=1
+                self.label_list[self.x][self.y].setStyleSheet(self.border_s)
+        elif e.key() == Qt.Key_A:
+                self.label_list[self.x][self.y].setStyleSheet(self.border_b)
+                self.y-=1
+                self.label_list[self.x][self.y].setStyleSheet(self.border_s)
+        elif e.key() == Qt.Key_F:
+            self.second = delfractchecksumwindow('정말 삭제할까요?',self.fract_code[self.x][self.y])
+            self.second.exec()
+            self.close()
+            
 #분류추가(단어)
 class addfractwordwindow(QDialog,QWidget,login_pw_window):
     word_table = [['ㄱ','ㄴ','ㄷ','ㄹ','ㅁ','ㅂ','ㅅ'],
@@ -417,11 +1329,11 @@ class cudfractwindow(QDialog,QWidget, cud_window):
                 self.second.show()
                 self.close()
             elif self.cus == 1:
-                self.upin = updatefractwindow()   
+                self.upin = updatefractwindow(self.fract_name,self.fract_code)   
                 self.upin.show()
                 self.close()
             elif self.cus == 2:
-                self.upin = delfractwindow()   
+                self.upin = delfractwindow(self.fract_name,self.fract_code)   
                 self.upin.show()
                 self.close()
                 
@@ -429,6 +1341,8 @@ class cudfractwindow(QDialog,QWidget, cud_window):
 class selectfractwindow(QDialog,QWidget,form_word1window):
     fract_name=[]
     fract_code=[]
+    fract_name_ex=[]
+    fract_code_ex=[]
     word_name=[]
     datatrue=0
     x=0
@@ -486,7 +1400,6 @@ class selectfractwindow(QDialog,QWidget,form_word1window):
                 data = sock.recv(1000000)               
                 list2 = []
                 a = str(data.decode())
-                
                 list_row = []
                 list_row.append("분류편집")
                 if(a[:-2] == '0'):
@@ -506,17 +1419,43 @@ class selectfractwindow(QDialog,QWidget,form_word1window):
                         check+=1
                     list2.append(list_row)
                     self.fract_name = list2.copy()
-                    
-                    data2 = sock.recv(1000000)               
-                    list3 = []
-                    a2 = str(data2.decode())
+                    #전송 분류편집 형식 
+                    check = 0
+                    list4 = []
+                    list_row=[]
+                    for i in range(len(r)):
+                        if check == 3:
+                            check = 0
+                            list4.append(list_row)
+                            list_row=[]              
+                        list_row.append(r[i])
+                        check+=1
+                    list4.append(list_row)
+                    self.fract_name_ex = list4.copy()
 
+                    #분류코드
+                    data2 = sock.recv(1000000)               
+                    list5 = []
+                    a2 = str(data2.decode())
                     check = 1
                     list_row = []
                     list_row.append("분류편집")
                     result2 = a2[:-2]
                     r2 = result2.split('-')
-                    for i in range(len(r)):
+                    for i in range(len(r2)):
+                        if check == 3:
+                            check = 0
+                            list5.append(list_row)
+                            list_row=[]              
+                        list_row.append(r2[i])
+                        check+=1
+                    list5.append(list_row)
+                    self.fract_code = list5.copy()
+                    #전송 분류편집코드 형식
+                    check = 0
+                    list_row = []
+                    list3 = []
+                    for i in range(len(r2)):
                         if check == 3:
                             check = 0
                             list3.append(list_row)
@@ -524,7 +1463,8 @@ class selectfractwindow(QDialog,QWidget,form_word1window):
                         list_row.append(r2[i])
                         check+=1
                     list3.append(list_row)
-                    self.fract_code = list3.copy()
+                    self.fract_code_ex = list3.copy()
+                    
             elif i == 1 and self.datatrue == 1:
                 check=0
                 check_out = 0
@@ -617,11 +1557,11 @@ class selectfractwindow(QDialog,QWidget,form_word1window):
                 self.label_list[self.x][self.y].setStyleSheet(self.border_s)
         elif e.key() == Qt.Key_F:
             if self.x == 0 and self.y == 0:
-                self.word2 = cudfractwindow(self.fract_name, self.fract_code)
+                self.word2 = cudfractwindow(self.fract_name_ex, self.fract_code_ex)
                 self.word2.show()
                 self.close()
             else:
-                self.word2 = wordCUDwindow(self.word_name,self.x,self.y)
+                self.word2 = wordCUDwindow(self.fract_name,self.word_name,self.fract_code,self.x,self.y)
                 self.word2.show()
                 self.close()
             
@@ -1190,7 +2130,7 @@ class word1window(QDialog,QWidget,form_word1window):
             self.label_list.append(row_list)
             
         if 2 < len(self.label_list):
-                for i in range(3,len(self.label_list)):
+                for i in range(2,len(self.label_list)):
                     for j in range(len(self.label_list[i])):
                         self.label_list[i][j].hide()
                 
@@ -1200,6 +2140,7 @@ class word1window(QDialog,QWidget,form_word1window):
         self.scrollArea.setWidgetResizable(True)
         
     def dataImport(self):
+        
         for i in range(3):
             if i == 0:
                 check=0
@@ -1207,7 +2148,6 @@ class word1window(QDialog,QWidget,form_word1window):
                 data = sock.recv(1000000)               
                 list2 = []
                 a = str(data.decode())
-
                 result = a[:-2]
                 r = result.split('-')
                 list_row = []
@@ -1281,7 +2221,6 @@ class word1window(QDialog,QWidget,form_word1window):
 
                 list3 = []
                 list_add3 = []
-                
                 result3 = a[:-2]
                 r3 = result3.split('@')
                 
