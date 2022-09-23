@@ -1,16 +1,15 @@
 import os
 import sys
-import pyttsx3
+from gtts import gTTS
+import pygame
 from socket import *
 from select import select
 from PyQt5.QtWidgets import *
 from PyQt5 import uic
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
-from PIL import Image
 from io import BytesIO
 import base64
-import matplotlib.pyplot as plt
 import ast
 from hangul_utils import join_jamos
 
@@ -89,12 +88,12 @@ class WindowClass(QMainWindow,QWidget, form_class):
         elif e.key() == Qt.Key_F:
             if self.cus == 0:
                 self.second = word1window()    
-                self.second.show()
+                self.second.showMaximized()
                 self.close()
             elif self.cus == 3:
                 if idnum == 0:
                     self.login = loginidwindow()   
-                    self.login.show()
+                    self.login.showMaximized()
                     self.close()
                 elif idnum > 0:
                     idnum = 0
@@ -102,7 +101,7 @@ class WindowClass(QMainWindow,QWidget, form_class):
                     self.label_list[4].hide()
             elif self.cus == 4 and self.checkupdate == 1:
                 self.upin = selectfractwindow()   
-                self.upin.show()
+                self.upin.showMaximized()
                 self.close()
 
 #메시지 창
@@ -174,7 +173,7 @@ class updateword2window(QDialog,QWidget,login_pw_window):
         if e.key() == Qt.Key_G:
             num=0
             self.login = selectfractwindow()   
-            self.login.show()
+            self.login.showMaximized()
             self.close()
         elif e.key() == Qt.Key_S:
             if self.x < len(self.label_list)-1 and self.y < len(self.label_list[self.x+1]):
@@ -248,13 +247,13 @@ class updateword2window(QDialog,QWidget,login_pw_window):
                     self.second = warningwindow('실패')    
                     self.second.exec()
                     self.main = selectfractwindow()    
-                    self.main.show()
+                    self.main.showMaximized()
                     self.close()
                 elif int(a) == 1:
                     self.second = warningwindow('수정 성공')    
                     self.second.exec()
                     self.main = selectfractwindow()    
-                    self.main.show()
+                    self.main.showMaximized()
                     self.close()
                     
 #단어수정(선택)
@@ -303,7 +302,7 @@ class updatewordwindow(QDialog,QWidget,form_word1window):
     def keyReleaseEvent(self,e):        
         if e.key() == Qt.Key_G:
             self.second = selectfractwindow()    
-            self.second.show()
+            self.second.showMaximized()
             self.close()
         elif e.key() == Qt.Key_S:
             if self.x < len(self.label_list)-1 and self.y < len(self.label_list[self.x+1]):
@@ -352,7 +351,7 @@ class updatewordwindow(QDialog,QWidget,form_word1window):
                 self.label_list[self.x][self.y].setStyleSheet(self.border_s)
         elif e.key() == Qt.Key_F:
                 self.main = updateword2window(self.fract_code,self.word_name[self.x][self.y])    
-                self.main.show()
+                self.main.showMaximized()
                 self.close()
                 
                     
@@ -403,7 +402,7 @@ class delwordwindow(QDialog,QWidget,form_word1window):
         global idnum
         if e.key() == Qt.Key_G:
             self.second = selectfractwindow()    
-            self.second.show()
+            self.second.showMaximized()
             self.close()
         elif e.key() == Qt.Key_S:
             if self.x < len(self.label_list)-1 and self.y < len(self.label_list[self.x+1]):
@@ -459,13 +458,13 @@ class delwordwindow(QDialog,QWidget,form_word1window):
                     self.second = warningwindow('실패')    
                     self.second.exec()
                     self.main = selectfractwindow()    
-                    self.main.show()
+                    self.main.showMaximized()
                     self.close()
                 elif int(a) == 1:
                     self.second = warningwindow('삭제 성공')    
                     self.second.exec()
                     self.main = selectfractwindow()    
-                    self.main.show()
+                    self.main.showMaximized()
                     self.close()
             
 #단어추가
@@ -520,7 +519,7 @@ class addwordwindow(QDialog,QWidget,login_pw_window):
         if e.key() == Qt.Key_G:
             num=0
             self.login = selectfractwindow()   
-            self.login.show()
+            self.login.showMaximized()
             self.close()
         elif e.key() == Qt.Key_S:
             if self.x < len(self.label_list)-1 and self.y < len(self.label_list[self.x+1]):
@@ -594,13 +593,13 @@ class addwordwindow(QDialog,QWidget,login_pw_window):
                     self.second = warningwindow('실패')    
                     self.second.exec()
                     self.main = selectfractwindow()    
-                    self.main.show()
+                    self.main.showMaximized()
                     self.close()
                 elif int(a) == 1:
                     self.second = warningwindow('추가 성공')    
                     self.second.exec()
                     self.main = selectfractwindow()    
-                    self.main.show()
+                    self.main.showMaximized()
                     self.close()
                     
 #단어cud선택
@@ -637,7 +636,7 @@ class wordCUDwindow(QDialog,QWidget, cud_window):
                 self.label_list[self.cus].setStyleSheet(self.border_s)
         elif e.key() == Qt.Key_G:
             self.second = selectfractwindow()    
-            self.second.show()
+            self.second.showMaximized()
             self.close()
         elif e.key() == Qt.Key_S:
             if self.cus < 2:
@@ -647,15 +646,15 @@ class wordCUDwindow(QDialog,QWidget, cud_window):
         elif e.key() == Qt.Key_F:
             if self.cus == 0:
                 self.second = addwordwindow(self.fract_code[self.x][self.y])    
-                self.second.show()
+                self.second.showMaximized()
                 self.close()
             elif self.cus == 1:
                 self.upin = updatewordwindow(self.fract_code[self.x][self.y],self.word_name[self.x][self.y])   
-                self.upin.show()
+                self.upin.showMaximized()
                 self.close()
             elif self.cus == 2:
                 self.upin = delwordwindow(self.fract_code[self.x][self.y],self.word_name[self.x][self.y])   
-                self.upin.show()
+                self.upin.showMaximized()
                 self.close()
                 
 #분류수정(입력)
@@ -710,7 +709,7 @@ class updatefractwordwindow(QDialog,QWidget,login_pw_window):
         if e.key() == Qt.Key_G:
             num=0
             self.login = selectfractwindow()   
-            self.login.show()
+            self.login.showMaximized()
             self.close()
         elif e.key() == Qt.Key_S:
             if self.x < len(self.label_list)-1 and self.y < len(self.label_list[self.x+1]):
@@ -784,13 +783,13 @@ class updatefractwordwindow(QDialog,QWidget,login_pw_window):
                     self.second = warningwindow('실패')    
                     self.second.exec()
                     self.main = selectfractwindow()    
-                    self.main.show()
+                    self.main.showMaximized()
                     self.close()
                 elif int(a) == 1:
                     self.second = warningwindow('추가 성공')    
                     self.second.exec()
                     self.main = selectfractwindow()    
-                    self.main.show()
+                    self.main.showMaximized()
                     self.close()
 #분류수정선택
 class updatefractwindow(QDialog,QWidget,form_word1window):
@@ -838,7 +837,7 @@ class updatefractwindow(QDialog,QWidget,form_word1window):
     def keyReleaseEvent(self,e):        
         if e.key() == Qt.Key_G:
             self.second = selectfractwindow()    
-            self.second.show()
+            self.second.showMaximized()
             self.close()
         elif e.key() == Qt.Key_S:
             if self.x < len(self.label_list)-1 and self.y < len(self.label_list[self.x+1]):
@@ -887,7 +886,7 @@ class updatefractwindow(QDialog,QWidget,form_word1window):
                 self.label_list[self.x][self.y].setStyleSheet(self.border_s)
         elif e.key() == Qt.Key_F:
             self.second = updatefractwordwindow(self.fract_code[self.x][self.y])
-            self.second.exec()
+            self.second.showMaximized()
             self.close()
             
 #분류삭제확인창
@@ -914,11 +913,11 @@ class delfractchecksumwindow(QDialog,QWidget,checksum_window):
             if self.cus == 0:
                 sock.sendall(bytes("delclass--"+str(idnum)+"--"+self.code+"\n",'UTF-8'))
                 self.main = selectfractwindow()    
-                self.main.show()
+                self.main.showMaximized()
                 self.close()
             elif self.cus == 1:
                 self.main = selectfractwindow()    
-                self.main.show()
+                self.main.showMaximized()
                 self.close()
         elif e.key() == Qt.Key_A:
             if self.cus == 1:
@@ -977,7 +976,7 @@ class delfractwindow(QDialog,QWidget,form_word1window):
     def keyReleaseEvent(self,e):        
         if e.key() == Qt.Key_G:
             self.second = selectfractwindow()    
-            self.second.show()
+            self.second.showMaximized()
             self.close()
         elif e.key() == Qt.Key_S:
             if self.x < len(self.label_list)-1 and self.y < len(self.label_list[self.x+1]):
@@ -1081,7 +1080,7 @@ class addfractwordwindow(QDialog,QWidget,login_pw_window):
         if e.key() == Qt.Key_G:
             num=0
             self.login = selectfractwindow()   
-            self.login.show()
+            self.login.showMaximized()
             self.close()
         elif e.key() == Qt.Key_S:
             if self.x < len(self.label_list)-1 and self.y < len(self.label_list[self.x+1]):
@@ -1155,13 +1154,13 @@ class addfractwordwindow(QDialog,QWidget,login_pw_window):
                     self.second = warningwindow('존재하는 분류')    
                     self.second.exec()
                     self.main = selectfractwindow()    
-                    self.main.show()
+                    self.main.showMaximized()
                     self.close()
                 elif int(a) == 0:
                     self.second = warningwindow('추가 성공')    
                     self.second.exec()
                     self.main = selectfractwindow()    
-                    self.main.show()
+                    self.main.showMaximized()
                     self.close()
                     
 #분류추가(분류)
@@ -1214,7 +1213,7 @@ class addfractwindow(QDialog,QWidget,login_pw_window):
         if e.key() == Qt.Key_G:
             num=0
             self.login = selectfractwindow()   
-            self.login.show()
+            self.login.showMaximized()
             self.close()
         elif e.key() == Qt.Key_S:
             if self.x < len(self.label_list)-1 and self.y < len(self.label_list[self.x+1]):
@@ -1281,7 +1280,7 @@ class addfractwindow(QDialog,QWidget,login_pw_window):
                 self.label.setText(self.text)
             elif self.x == 0 and self.y == 0:
                 self.second = addfractwordwindow(self.label.text())    
-                self.second.show()
+                self.second.showMaximized()
                 self.close()
                     
 #분류cud선택
@@ -1316,7 +1315,7 @@ class cudfractwindow(QDialog,QWidget, cud_window):
                 self.label_list[self.cus].setStyleSheet(self.border_s)
         elif e.key() == Qt.Key_G:
             self.second = selectfractwindow()    
-            self.second.show()
+            self.second.showMaximized()
             self.close()
         elif e.key() == Qt.Key_S:
             if self.cus < 2:
@@ -1326,15 +1325,15 @@ class cudfractwindow(QDialog,QWidget, cud_window):
         elif e.key() == Qt.Key_F:
             if self.cus == 0:
                 self.second = addfractwindow()    
-                self.second.show()
+                self.second.showMaximized()
                 self.close()
             elif self.cus == 1:
                 self.upin = updatefractwindow(self.fract_name,self.fract_code)   
-                self.upin.show()
+                self.upin.showMaximized()
                 self.close()
             elif self.cus == 2:
                 self.upin = delfractwindow(self.fract_name,self.fract_code)   
-                self.upin.show()
+                self.upin.showMaximized()
                 self.close()
                 
 #단어편집 분류선택
@@ -1508,7 +1507,7 @@ class selectfractwindow(QDialog,QWidget,form_word1window):
         
         if e.key() == Qt.Key_G:
             self.second = WindowClass()    
-            self.second.show()
+            self.second.showMaximized()
             self.close()
         elif e.key() == Qt.Key_S:
             if self.x < len(self.label_list)-1 and self.y < len(self.label_list[self.x+1]):
@@ -1558,11 +1557,11 @@ class selectfractwindow(QDialog,QWidget,form_word1window):
         elif e.key() == Qt.Key_F:
             if self.x == 0 and self.y == 0:
                 self.word2 = cudfractwindow(self.fract_name_ex, self.fract_code_ex)
-                self.word2.show()
+                self.word2.showMaximized()
                 self.close()
             else:
                 self.word2 = wordCUDwindow(self.fract_name,self.word_name,self.fract_code,self.x,self.y)
-                self.word2.show()
+                self.word2.showMaximized()
                 self.close()
             
 #회원가입(비밀번호)
@@ -1617,7 +1616,7 @@ class addpwwindow(QDialog,QWidget,login_pw_window):
         if e.key() == Qt.Key_G:
             num=0
             self.login = addidwindow()   
-            self.login.show()
+            self.login.showMaximized()
             self.close()
         elif e.key() == Qt.Key_S:
             if self.x < len(self.label_list)-1 and self.y < len(self.label_list[self.x+1]):
@@ -1691,13 +1690,13 @@ class addpwwindow(QDialog,QWidget,login_pw_window):
                     self.second = warningwindow('존재하는 아이디')    
                     self.second.exec()
                     self.main = addidwindow()    
-                    self.main.show()
+                    self.main.showMaximized()
                     self.close()
                 elif int(a) == 0:
                     self.second = warningwindow('가입 성공')    
                     self.second.exec()
                     self.main = WindowClass()    
-                    self.main.show()
+                    self.main.showMaximized()
                     self.close()
                     
 #회원가입(아이디)
@@ -1750,7 +1749,7 @@ class addidwindow(QDialog,QWidget,login_pw_window):
         if e.key() == Qt.Key_G:
             num=0
             self.login = loginidwindow()   
-            self.login.show()
+            self.login.showMaximized()
             self.close()
         elif e.key() == Qt.Key_S:
             if self.x < len(self.label_list)-1 and self.y < len(self.label_list[self.x+1]):
@@ -1821,7 +1820,7 @@ class addidwindow(QDialog,QWidget,login_pw_window):
                     self.second.exec()
                 else:
                     self.main = addpwwindow(self.label.text())    
-                    self.main.show()
+                    self.main.showMaximized()
                     self.close()
                     
 #로그인(아이디)
@@ -1864,6 +1863,7 @@ class loginidwindow(QDialog,QWidget,login_id_window):
             for j in range(len(self.word_table[i])):
                 label=QLabel(self.word_table[i][j])
                 label.setStyleSheet(self.border_b)
+                label.setAlignment(Qt.AlignCenter)
                 formlayout.addWidget(label,i,j)
                 
                 row_list.append(label)
@@ -1874,7 +1874,7 @@ class loginidwindow(QDialog,QWidget,login_id_window):
         if e.key() == Qt.Key_G:
             num=0
             self.second = WindowClass()    
-            self.second.show()
+            self.second.showMaximized()
             self.close()
         elif e.key() == Qt.Key_S:
             if self.x < len(self.label_list)-1 and self.y < len(self.label_list[self.x+1]):
@@ -1953,11 +1953,11 @@ class loginidwindow(QDialog,QWidget,login_id_window):
                 self.label.setText(self.text)
             elif self.x == 0 and self.y == 0:
                 self.second = loginpwwindow(self.label.text())    
-                self.second.show()
+                self.second.showMaximized()
                 self.close()
             elif self.x == 0 and self.y == 2:
                 self.second = addidwindow()    
-                self.second.show()
+                self.second.showMaximized()
                 self.close()
 
 #로그인(비밀번호)
@@ -1999,6 +1999,7 @@ class loginpwwindow(QDialog,QWidget,login_pw_window):
             for j in range(len(self.word_table[i])):
                 label=QLabel(self.word_table[i][j])
                 label.setStyleSheet(self.border_b)
+                label.setAlignment(Qt.AlignCenter)
                 formlayout.addWidget(label,i,j)
                 
                 row_list.append(label)
@@ -2010,7 +2011,7 @@ class loginpwwindow(QDialog,QWidget,login_pw_window):
         if e.key() == Qt.Key_G:
             num=0
             self.login = loginidwindow()   
-            self.login.show()
+            self.login.showMaximized()
             self.close()
         elif e.key() == Qt.Key_S:
             if self.x < len(self.label_list)-1 and self.y < len(self.label_list[self.x+1]):
@@ -2085,14 +2086,14 @@ class loginpwwindow(QDialog,QWidget,login_pw_window):
                     self.second = warningwindow('로그인 실패')    
                     self.second.exec()
                     self.main = WindowClass()    
-                    self.main.show()
+                    self.main.showMaximized()
                     self.close()
                 elif int(a) > 0:
                     idnum = int(a)
                     self.second = warningwindow('로그인 성공')    
                     self.second.exec()
                     self.main = WindowClass()    
-                    self.main.show()
+                    self.main.showMaximized()
                     self.close()          
                 
 
@@ -2145,7 +2146,8 @@ class word1window(QDialog,QWidget,form_word1window):
             if i == 0:
                 check=0
                 sock.sendall(bytes(str(i+1)+"--"+str(idnum)+"\n",'UTF-8'))
-                data = sock.recv(1000000)               
+                data = sock.recv(1000000)
+                    
                 list2 = []
                 a = str(data.decode())
                 result = a[:-2]
@@ -2160,11 +2162,11 @@ class word1window(QDialog,QWidget,form_word1window):
                     check+=1
                 list2.append(list_row)
                 self.fract_name = list2.copy()
-                
+
+                sock.sendall(bytes("12--"+str(idnum)+"\n",'UTF-8'))
                 data2 = sock.recv(1000000)               
                 list3 = []
                 a2 = str(data2.decode())
-
                 check = 0
                 result2 = a2[:-2]
                 r2 = result2.split('-')
@@ -2212,7 +2214,8 @@ class word1window(QDialog,QWidget,form_word1window):
                 check_out3 = 0
                 a=''
                 sock.sendall(bytes(str(i+1)+"--"+str(idnum)+"\n",'UTF-8'))
-                data2 = sock.recv(100000)
+                data2 = sock.recv(10000)
+                sock.sendall(bytes("32--"+str(idnum)+"\n",'UTF-8'))
                 while True:
                     data = sock.recv(100000)
                     a = a + data.decode()
@@ -2222,6 +2225,7 @@ class word1window(QDialog,QWidget,form_word1window):
                 list3 = []
                 list_add3 = []
                 result3 = a[:-2]
+                
                 r3 = result3.split('@')
                 
                 for i in range(len(r3)):
@@ -2256,7 +2260,7 @@ class word1window(QDialog,QWidget,form_word1window):
         
         if e.key() == Qt.Key_G:
             self.second = WindowClass()    
-            self.second.show()
+            self.second.showMaximized()
             self.close()
         elif e.key() == Qt.Key_S:
             if self.x < len(self.label_list)-1 and self.y < len(self.label_list[self.x+1]):
@@ -2305,7 +2309,7 @@ class word1window(QDialog,QWidget,form_word1window):
                 self.label_list[self.x][self.y].setStyleSheet(self.border_s)
         elif e.key() == Qt.Key_F:
             self.word2 = word2window(self.word_name,self.image_name,self.x,self.y)
-            self.word2.show()
+            self.word2.showMaximized()
             self.close()
 
 #단어선택 및 출력
@@ -2332,8 +2336,8 @@ class word2window(QDialog,QWidget,form_word2window):
         self.fract_y = y
         self.initUi()
         self.label_list[1][0].setStyleSheet(self.border_s)
+        pygame.mixer.init()
         self.show()
-        self.engine = pyttsx3.init()
 
     def initUi(self):
         self.setupUi(self)
@@ -2363,7 +2367,7 @@ class word2window(QDialog,QWidget,form_word2window):
         
                 box = QVBoxLayout()
                 label=QLabel(self.word_name1[self.fract_x][self.fract_y][i][j])
-                label.setAlignment(Qt.AlignHCenter)
+                label.setAlignment(Qt.AlignCenter)
                 
                 label2=QLabel()
                 label2.setAlignment(Qt.AlignHCenter)
@@ -2394,7 +2398,7 @@ class word2window(QDialog,QWidget,form_word2window):
         
         if e.key() == Qt.Key_G:
             self.word2 = word1window()
-            self.word2.show()
+            self.word2.showMaximized()
             self.deleteLater()
         elif e.key() == Qt.Key_S:
             if self.x < len(self.label_list)-1 and self.y < len(self.label_list[self.x+1]):
@@ -2492,8 +2496,13 @@ class word2window(QDialog,QWidget,form_word2window):
                 self.text += self.word_name1[self.fract_x][self.fract_y][self.x-1][self.y]
                 self.text_label.setText(str(self.text))
             elif self.x == 0 and self.y == 0:
-                self.engine.say(self.text)
-                self.engine.runAndWait()
+                at = gTTS(text=self.text,lang="ko")
+                at.save("ta.mp3")
+                pygame.mixer.music.load("ta.mp3")
+                pygame.mixer.music.play()
+                while(pygame.mixer.music.get_busy()):
+                    b=0
+                pygame.mixer.music.unload()
             elif self.x == 0 and self.y == 1:
                 self.text = ''
                 self.text_label.setText(self.text)
@@ -2547,9 +2556,9 @@ def jamo3(text2):
     
 if __name__ == '__main__':
     sock = socket(AF_INET,SOCK_STREAM)
-    sock.connect(('localhost',6000));
+    sock.connect(('aszx1234.duckdns.org',6000));
     app = QApplication(sys.argv)
     myWindow = WindowClass()
-    myWindow.show()
+    myWindow.showMaximized()
     app.exec_()
     sock.close()

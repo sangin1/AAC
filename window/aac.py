@@ -13,10 +13,6 @@ import base64
 import matplotlib.pyplot as plt
 import ast
 from hangul_utils import join_jamos
-try:
-    import RPi.GPIO as GPIO
-except RuntimeError:
-    print("Error importing RPi.GPIO!")
 
 def resource_path(relative_path):
     base_path = getattr(sys, "_MEIPASS", os.path.dirname(os.path.abspath(__file__)))
@@ -46,14 +42,6 @@ checksum_window = uic.loadUiType(checksum)[0]
 
 cud = resource_path('CUD.ui')
 cud_window = uic.loadUiType(cud)[0]
-
-GPIO.setmode(GPIO.BCM)
-GPIO.setup(25, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-GPIO.setup(24, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-GPIO.setup(23, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-GPIO.setup(22, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-GPIO.setup(27, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-GPIO.setup(4, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 
 idnum=0
 
@@ -85,38 +73,7 @@ class WindowClass(QMainWindow,QWidget, form_class):
             self.label_list[3].setText('로그아웃')
             self.label_list[4].show()
             self.checkupdate = 1
-
-    def my_up(self,channel):
-        if self.cus > 0:
-            self.label_list[self.cus].setStyleSheet(self.border_b)
-            self.cus-=1
-            self.label_list[self.cus].setStyleSheet(self.border_s)
-
-    def my_down(self,channel):
-        if self.cus < 4:
-            self.label_list[self.cus].setStyleSheet(self.border_b)
-            self.cus+=1
-            self.label_list[self.cus].setStyleSheet(self.border_s)
-
-    def my_ok(self,channel):
-        if self.cus == 0:
-            self.second = word1window()    
-            self.second.show()
-            self.close()
-        elif self.cus == 3:
-            if idnum == 0:
-                self.login = loginidwindow()   
-                self.login.show()
-                self.close()
-            elif idnum > 0:
-                idnum = 0
-                self.label_list[3].setText('로그인')
-                self.label_list[4].hide()
-            elif self.cus == 4 and self.checkupdate == 1:
-                self.upin = selectfractwindow()   
-                self.upin.show()
-                self.close()
-                
+            
     def keyReleaseEvent(self,e):
         global idnum
         if e.key() == Qt.Key_W:
@@ -1786,83 +1743,7 @@ class addidwindow(QDialog,QWidget,login_pw_window):
                 
                 row_list.append(label)
             self.label_list.append(row_list)
-        self.widget.setLayout(formlayout)
-
-    def my_up(self,channel):
-        if self.x > 0 and self.y < len(self.label_list[self.x-1]):
-            self.label_list[self.x][self.y].setStyleSheet(self.border_b)
-            self.x-=1
-            if self.x==0 and self.y==0:
-                self.label_list[self.x][self.y].setStyleSheet(self.border_gs)
-            elif self.x==0 and self.y==1:
-                self.label_list[self.x][self.y].setStyleSheet(self.border_rs)
-            else:
-                self.label_list[self.x][self.y].setStyleSheet(self.border_s)
-
-    def my_down(self,channel):
-        if self.x < len(self.label_list)-1 and self.y < len(self.label_list[self.x+1]):
-            if self.x==0 and self.y==0:
-                self.label_list[self.x][self.y].setStyleSheet(self.border_g)
-            elif self.x==0 and self.y==1:
-                self.label_list[self.x][self.y].setStyleSheet(self.border_r)
-            else:
-                self.label_list[self.x][self.y].setStyleSheet(self.border_b)
-                self.x+=1
-                self.label_list[self.x][self.y].setStyleSheet(self.border_s)
-
-    def my_ok(self,channel):
-        if self.x >0:
-            self.text = self.word_table[self.x-1][self.y]
-            for key, value in self.cons_all.items():
-                if value == self.text:
-                    self.label_text += key
-            self.label.setText(jamo3(self.label_text))                
-        elif self.x == 0 and self.y == 1:
-            self.text = ''
-            self.label_text = ''
-            self.label.setText(self.text)
-        elif self.x == 0 and self.y == 0:
-            if self.label.text() == '':
-                self.second = warningwindow('빈 아이디')    
-                self.second.exec()
-            else:
-                self.main = addpwwindow(self.label.text())    
-                self.main.show()
-                self.close()
-
-    def my_left(self,channel):
-        if self.y==0:
-            self.label_list[self.x][self.y].setStyleSheet(self.border_b)
-            self.x=0
-            self.y=0
-            self.label_list[self.x][self.y].setStyleSheet(self.border_gs)
-        if self.y > 0:
-            if self.x==0:
-                if self.y==1:
-                    self.label_list[self.x][self.y].setStyleSheet(self.border_r)
-                    self.y-=1
-                    self.label_list[self.x][self.y].setStyleSheet(self.border_gs)
-            else:
-                self.label_list[self.x][self.y].setStyleSheet(self.border_b)
-                self.y-=1
-                self.label_list[self.x][self.y].setStyleSheet(self.border_s)
-
-    def my_right(self,channel):
-        if self.y == len(self.label_list[self.x])-1:
-            self.label_list[self.x][self.y].setStyleSheet(self.border_b)
-            self.x=0
-            self.y=0
-            self.label_list[self.x][self.y].setStyleSheet(self.border_gs)
-        if self.y < len(self.label_list[self.x])-1:
-            if self.x==0:
-                if self.y==0:
-                    self.label_list[self.x][self.y].setStyleSheet(self.border_g)
-                    self.y+=1
-                    self.label_list[self.x][self.y].setStyleSheet(self.border_rs)
-            else:
-                self.label_list[self.x][self.y].setStyleSheet(self.border_b)
-                self.y+=1
-                self.label_list[self.x][self.y].setStyleSheet(self.border_s)
+        self.widget.setLayout(formlayout) 
 
     def keyReleaseEvent(self,e):
         global idnum
@@ -2264,7 +2145,7 @@ class word1window(QDialog,QWidget,form_word1window):
             if i == 0:
                 check=0
                 sock.sendall(bytes(str(i+1)+"--"+str(idnum)+"\n",'UTF-8'))
-                data = sock.recv(1000000)               
+                data = sock.recv(1000000)
                 list2 = []
                 a = str(data.decode())
                 result = a[:-2]
@@ -2283,7 +2164,6 @@ class word1window(QDialog,QWidget,form_word1window):
                 data2 = sock.recv(1000000)               
                 list3 = []
                 a2 = str(data2.decode())
-
                 check = 0
                 result2 = a2[:-2]
                 r2 = result2.split('-')
@@ -2669,12 +2549,6 @@ if __name__ == '__main__':
     sock.connect(('aszx1234.duckdns.org',6000));
     app = QApplication(sys.argv)
     myWindow = WindowClass()
-    GPIO.add_event_detect(25, GPIO.RISING, callback=window.my_left,bouncetime=2000)
-    GPIO.add_event_detect(24, GPIO.RISING, callback=window.my_down,bouncetime=2000)
-    GPIO.add_event_detect(23, GPIO.RISING, callback=window.my_up,bouncetime=2000)
-    GPIO.add_event_detect(22, GPIO.RISING, callback=window.my_right,bouncetime=2000)
-    GPIO.add_event_detect(27, GPIO.RISING, callback=window.my_ok,bouncetime=2000)
-    GPIO.add_event_detect(4, GPIO.RISING, callback=window.my_back,bouncetime=2000)
     myWindow.show()
     app.exec_()
     sock.close()
