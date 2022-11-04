@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Form</class>
+ <widget class="QWidget" name="Form">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1235</width>
+    <height>816</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">background-color: rgb(196, 254, 255);</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout" rowstretch="1,8,1,4,4,1" columnstretch="1,2,2,1">
+   <item row="1" column="0">
+    <widget class="QLabel" name="label_2">
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="1">
+    <widget class="QLabel" name="an3">
+     <property name="font">
+      <font>
+       <family>AcadEref</family>
+       <pointsize>20</pointsize>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background-color: rgb(0, 255, 255);
+background-color: rgb(85, 255, 255);</string>
+     </property>
+     <property name="text">
+      <string>답3</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="2">
+    <widget class="QLabel" name="an2">
+     <property name="font">
+      <font>
+       <family>AcadEref</family>
+       <pointsize>20</pointsize>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background-color: rgb(0, 255, 255);
+background-color: rgb(85, 255, 255);</string>
+     </property>
+     <property name="text">
+      <string>답2</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="2">
+    <widget class="QLabel" name="label_11">
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="1">
+    <widget class="QLabel" name="label_4">
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="3">
+    <widget class="QLabel" name="label_10">
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="2">
+    <widget class="QLabel" name="an4">
+     <property name="font">
+      <font>
+       <family>AcadEref</family>
+       <pointsize>20</pointsize>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background-color: rgb(0, 255, 255);
+background-color: rgb(85, 255, 255);</string>
+     </property>
+     <property name="text">
+      <string>답4</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="1">
+    <widget class="QLabel" name="label_5">
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="1">
+    <widget class="QLabel" name="an1">
+     <property name="font">
+      <font>
+       <family>AcadEref</family>
+       <pointsize>20</pointsize>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background-color: rgb(0, 255, 255);
+background-color: rgb(85, 255, 255);</string>
+     </property>
+     <property name="text">
+      <string>답1</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="1" colspan="2">
+    <widget class="QLabel" name="pic">
+     <property name="styleSheet">
+      <string notr="true">background-color: rgb(170, 255, 255);</string>
+     </property>
+     <property name="text">
+      <string>그림</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="0">
+    <widget class="QLabel" name="now">
+     <property name="font">
+      <font>
+       <family>AcadEref</family>
+       <pointsize>20</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>문제진행</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="3">
+    <widget class="QLabel" name="score">
+     <property name="font">
+      <font>
+       <family>AcadEref</family>
+       <pointsize>20</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>스코어</string>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

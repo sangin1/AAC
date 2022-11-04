@@ -45,6 +45,12 @@ cud_window = uic.loadUiType(cud)[0]
 picquiz = resource_path('game1.ui')
 picquiz_window = uic.loadUiType(picquiz)[0]
 
+wordquiz = resource_path('game2.ui')
+wordquiz_window = uic.loadUiType(wordquiz)[0]
+
+selectgame = resource_path('selectgame.ui')
+selectgame_window = uic.loadUiType(selectgame)[0]
+
 idnum=0
 
 #mainpage
@@ -62,18 +68,17 @@ class WindowClass(QMainWindow,QWidget, form_class):
         self.cus=0
         self.label_list=[]
         self.label_list.append(self.label_1)
-        self.label_list.append(self.label_2)
         self.label_list.append(self.label_3)
         self.label_list.append(self.label_4)
         self.label_list.append(self.label_5)
         self.label_list[self.cus].setStyleSheet(self.border_s)
         if idnum == 0:
-            self.label_list[3].setText('로그인')
-            self.label_list[4].hide()
+            self.label_list[2].setText('로그인')
+            self.label_list[3].hide()
             self.checkupdate = 0
         elif idnum > 0:
-            self.label_list[3].setText('로그아웃')
-            self.label_list[4].show()
+            self.label_list[2].setText('로그아웃')
+            self.label_list[3].show()
             self.checkupdate = 1
             
     def keyReleaseEvent(self,e):
@@ -84,7 +89,7 @@ class WindowClass(QMainWindow,QWidget, form_class):
                 self.cus-=1
                 self.label_list[self.cus].setStyleSheet(self.border_s)
         elif e.key() == Qt.Key_S:
-            if self.cus < 4:
+            if self.cus < 3:
                 self.label_list[self.cus].setStyleSheet(self.border_b)
                 self.cus+=1
                 self.label_list[self.cus].setStyleSheet(self.border_s)
@@ -93,11 +98,11 @@ class WindowClass(QMainWindow,QWidget, form_class):
                 self.second = word1window()    
                 self.second.showMaximized()
                 self.close()
-            if self.cus == 2:
-                self.second = picgamewindow()    
+            if self.cus == 1:
+                self.second = selectgamewindow()    
                 self.second.showMaximized()
                 self.close()
-            elif self.cus == 3:
+            elif self.cus == 2:
                 if idnum == 0:
                     self.login = loginidwindow()   
                     self.login.showMaximized()
@@ -106,11 +111,213 @@ class WindowClass(QMainWindow,QWidget, form_class):
                     idnum = 0
                     self.label_list[3].setText('로그인')
                     self.label_list[4].hide()
-            elif self.cus == 4 and self.checkupdate == 1:
+            elif self.cus == 3 and self.checkupdate == 1:
                 self.upin = selectfractwindow()   
                 self.upin.showMaximized()
                 self.close()
 
+#단어조합게임
+class wordquizwindow(QDialog,QWidget, wordquiz_window):
+    x = 0
+    y = 0
+    score=0
+    text = ''
+    time=180
+    word_name = []
+    border_s = 'border-color: rgb(0,21,209); \nbackground-color: rgb(170, 242, 248);\nborder-style: solid;\nborder-width: 2px;\nborder-radius: 10px;'
+    border_b = 'border-color: rgb(170, 242, 248); \nbackground-color: rgb(170, 242, 248);\nborder-style: solid;\nborder-width: 2px;\nborder-radius: 10px;'
+    border_g = 'background-color: rgb(0, 255, 0);\nborder-radius: 30px;'
+    border_gs = 'background-color: rgb(0, 255, 0);\nborder-radius: 30px;border-color: rgb(0,21,209);border-style: solid;\nborder-width: 2px'
+    border_rs = 'background-color: rgb(255, 69, 69);\nborder-radius: 30px;border-color: rgb(0,21,209);border-style: solid;\nborder-width: 2px'
+    border_r = 'background-color: rgb(255, 69, 69);\nborder-radius: 30px;'
+  
+    def __init__(self):
+        super(wordquizwindow,self).__init__()
+        self.dataImport()
+        self.initUi()
+        self.label_list[0][0].setStyleSheet(self.border_s)
+        self.show()
+        self.timer = QTimer(self)
+        self.timer.start(1000)
+        self.timer.timeout.connect(self.timeout)
+        self.checklist=[]
+
+    def initUi(self):
+        self.setupUi(self)
+        self.label_list=[]
+        formlayout = QGridLayout()
+        for i in range(len(self.word_name)):
+            row_list=[]
+            for j in range(len(self.word_name[i])):        
+                label=QLabel(self.word_name[i][j])
+                font1 = label.font()
+                font1.setPointSize(18)
+                label.setFont(font1)
+                label.setAlignment(Qt.AlignCenter)
+                label.setStyleSheet(self.border_b)
+                formlayout.addWidget(label,i,j)
+                row_list.append(label)
+                
+            self.label_list.append(row_list)
+        row_list=[]
+        row_list.append(self.check)
+        row_list.append(self.remove)
+        self.label_list.append(row_list)
+        widget = QWidget()
+        widget.setLayout(formlayout) 
+        self.scrollArea.setWidget(widget)
+        self.scrollArea.setWidgetResizable(True)
+
+        
+
+    def timeout(self):
+        self.time-=1
+        if self.time == 0:
+            self.second = warningwindow(str(self.score)+'점')    
+            self.second.exec()
+            self.second = WindowClass()    
+            self.second.showMaximized()
+            self.close()
+        self.time_label.setText("시간 "+str(self.time))
+        
+        
+    def dataImport(self):    
+        check=0
+        sock.sendall(bytes("--cword--1"+"\n",'UTF-8'))
+        data = sock.recv(1000000)
+                    
+        list2 = []
+        a = str(data.decode())
+        result = a[:-3]
+        r = result.split('-')
+        list_row = []
+        for i in range(len(r)):
+            if check == 7:
+                check = 0
+                list2.append(list_row)
+                list_row=[]              
+            list_row.append(r[i])
+            check+=1
+        list2.append(list_row)
+        self.word_name = list2.copy()
+        
+    def keyReleaseEvent(self,e):
+        if e.key() == Qt.Key_G:
+            self.second = WindowClass()    
+            self.second.showMaximized()
+            self.close()
+        elif e.key() == Qt.Key_S:
+            if self.x < len(self.label_list)-2 and self.y < len(self.label_list[self.x+1]):
+                self.label_list[self.x][self.y].setStyleSheet(self.border_b)
+                self.x+=1                            
+                self.label_list[self.x][self.y].setStyleSheet(self.border_s)
+            elif self.x == len(self.label_list)-2:
+                self.label_list[self.x][self.y].setStyleSheet(self.border_b)
+                self.x+=1
+                self.y=0
+                self.label_list[self.x][self.y].setStyleSheet(self.border_gs)
+        elif e.key() == Qt.Key_W:
+            if self.x > 0 and self.x<7:
+                self.label_list[self.x][self.y].setStyleSheet(self.border_b)
+                self.x-=1              
+                self.label_list[self.x][self.y].setStyleSheet(self.border_s)
+            elif self.x==7 and self.y==0:
+                self.label_list[self.x][self.y].setStyleSheet(self.border_g)
+                self.x-=1              
+                self.label_list[self.x][self.y].setStyleSheet(self.border_s)
+            elif self.x==7 and self.y==1:
+                self.label_list[self.x][self.y].setStyleSheet(self.border_r)
+                self.x-=1              
+                self.label_list[self.x][self.y].setStyleSheet(self.border_s)
+        elif e.key() == Qt.Key_D:
+            if self.y < len(self.label_list[self.x])-1 and self.x < 7:
+                self.label_list[self.x][self.y].setStyleSheet(self.border_b)
+                self.y+=1
+                self.label_list[self.x][self.y].setStyleSheet(self.border_s)
+            elif self.y < len(self.label_list[self.x])-1 and self.x == 7:
+                self.label_list[self.x][self.y].setStyleSheet(self.border_g)
+                self.y+=1
+                self.label_list[self.x][self.y].setStyleSheet(self.border_rs)
+        elif e.key() == Qt.Key_A:
+            if self.y >0 and self.x<7:
+                self.label_list[self.x][self.y].setStyleSheet(self.border_b)
+                self.y-=1
+                self.label_list[self.x][self.y].setStyleSheet(self.border_s)
+            elif self.y >0 and self.x==7:
+                self.label_list[self.x][self.y].setStyleSheet(self.border_r)
+                self.y-=1
+                self.label_list[self.x][self.y].setStyleSheet(self.border_gs)
+        elif e.key() == Qt.Key_F:
+            if self.x == 7 and self.y == 0:
+                checktrue=0
+                for i in range(len(self.checklist)):
+                    if self.checklist[i]==self.text:
+                        checktrue+=1
+                if checktrue == 0 :
+                    self.checklist.append(self.text)
+                    sock.sendall(bytes("--wordCheck--"+self.text+"\n",'UTF-8'))
+                    data = sock.recv(1000000)
+                    a = str(data.decode())
+                    result=a[:-2]
+                    if result == '1':
+                        self.score+=len(self.text)
+                        self.second = warningwindow('있는단어')
+                        self.second.exec()
+                        self.score_label.setText("점수 "+str(self.score))
+                    elif result == '0':
+                        self.second = warningwindow('없는단어')    
+                        self.second.exec()
+                else:
+                    self.second = warningwindow('이미입력한단어')    
+                    self.second.exec()
+            elif self.x == 7 and self.y == 1:
+                self.text = ''
+                self.text_label.setText(self.text)
+            elif self.x < 7:
+                self.text += self.word_name[self.x][self.y]
+                self.text_label.setText(str(self.text))
+
+                
+#게임선택창
+class selectgamewindow(QDialog,QWidget, selectgame_window):
+    cus = 0
+    border_s = 'border-color: rgb(0,21,209); \nbackground-color: rgb(170, 242, 248);\nborder-style: solid;\nborder-width: 2px;\nborder-radius: 10px;'
+    border_b = 'border-color: rgb(170, 242, 248); \nbackground-color: rgb(170, 242, 248);\nborder-style: solid;\nborder-width: 2px;\nborder-radius: 10px;'
+     
+    def __init__(self):
+        super(selectgamewindow,self).__init__()
+        self.setupUi(self)
+        self.cus=0
+        self.label_list=[]
+        self.label_list.append(self.game1)
+        self.label_list.append(self.game2)
+        self.label_list[self.cus].setStyleSheet(self.border_s)
+        
+    def keyReleaseEvent(self,e):
+        if e.key() == Qt.Key_A:
+            if self.cus > 0:
+                self.label_list[self.cus].setStyleSheet(self.border_b)
+                self.cus-=1
+                self.label_list[self.cus].setStyleSheet(self.border_s)
+        elif e.key() == Qt.Key_G:
+            self.second = WindowClass()    
+            self.second.showMaximized()
+            self.close()
+        elif e.key() == Qt.Key_D:
+            if self.cus < 2:
+                self.label_list[self.cus].setStyleSheet(self.border_b)
+                self.cus+=1
+                self.label_list[self.cus].setStyleSheet(self.border_s)
+        elif e.key() == Qt.Key_F:
+            if self.cus == 0:
+                self.second = picgamewindow()    
+                self.second.showMaximized()
+                self.close()
+            elif self.cus == 1:
+                self.upin = wordquizwindow()   
+                self.upin.showMaximized()
+                self.close()
+                
 #메시지 창
 class warningwindow(QDialog,QWidget,warning_window):
     def __init__(self,text):
@@ -358,7 +565,7 @@ class updateword2window(QDialog,QWidget,login_pw_window):
                 self.label_text = ''
                 self.label.setText(self.text)
             elif self.x == 0 and self.y == 0:
-                sock.sendall(bytes("updateword--"+self.idText+"--"+self.label.text()+"--"+str(idnum)+"--"+self.word+"\n",'UTF-8'))
+                sock.sendall(bytes("--updateword--"+self.idText+"--"+self.label.text()+"--"+str(idnum)+"--"+self.word+"\n",'UTF-8'))
                 data = sock.recv(10)
                 a = str(data.decode())
                 a = a[0:1]
@@ -569,7 +776,7 @@ class delwordwindow(QDialog,QWidget,form_word1window):
                 self.y-=1
                 self.label_list[self.x][self.y].setStyleSheet(self.border_s)
         elif e.key() == Qt.Key_F:            
-                sock.sendall(bytes("delword--"+self.fract_code+"--"+self.word_name[self.x][self.y]+"--"+str(idnum)+"\n",'UTF-8'))
+                sock.sendall(bytes("--delword--"+self.fract_code+"--"+self.word_name[self.x][self.y]+"--"+str(idnum)+"\n",'UTF-8'))
                 data = sock.recv(10)
                 a = str(data.decode())
                 a = a[0:1]
@@ -704,7 +911,7 @@ class addwordwindow(QDialog,QWidget,login_pw_window):
                 self.label_text = ''
                 self.label.setText(self.text)
             elif self.x == 0 and self.y == 0:
-                sock.sendall(bytes("addword--"+self.idText+"--"+self.label.text()+"--"+str(idnum)+"\n",'UTF-8'))
+                sock.sendall(bytes("--addword--"+self.idText+"--"+self.label.text()+"--"+str(idnum)+"\n",'UTF-8'))
                 data = sock.recv(10)
                 a = str(data.decode())
                 a = a[0:1]
@@ -894,7 +1101,7 @@ class updatefractwordwindow(QDialog,QWidget,login_pw_window):
                 self.label_text = ''
                 self.label.setText(self.text)
             elif self.x == 0 and self.y == 0:
-                sock.sendall(bytes("updateclass--"+self.idText+"--"+self.label.text()+"--"+str(idnum)+"\n",'UTF-8'))
+                sock.sendall(bytes("--updateclass--"+self.idText+"--"+self.label.text()+"--"+str(idnum)+"\n",'UTF-8'))
                 data = sock.recv(10)
                 a = str(data.decode())
                 a = a[0:1]
@@ -1030,7 +1237,7 @@ class delfractchecksumwindow(QDialog,QWidget,checksum_window):
         global idnum
         if e.key() == Qt.Key_F:
             if self.cus == 0:
-                sock.sendall(bytes("delclass--"+str(idnum)+"--"+self.code+"\n",'UTF-8'))
+                sock.sendall(bytes("--delclass--"+str(idnum)+"--"+self.code+"\n",'UTF-8'))
                 self.main = selectfractwindow()    
                 self.main.showMaximized()
                 self.close()
@@ -1514,7 +1721,7 @@ class selectfractwindow(QDialog,QWidget,form_word1window):
         for i in range(2):
             if i == 0:
                 check=1
-                sock.sendall(bytes("upin--"+str(idnum)+"\n",'UTF-8'))
+                sock.sendall(bytes("--upin--"+str(idnum)+"\n",'UTF-8'))
                 data = sock.recv(1000000)               
                 list2 = []
                 a = str(data.decode())
@@ -1586,7 +1793,7 @@ class selectfractwindow(QDialog,QWidget,form_word1window):
             elif i == 1 and self.datatrue == 1:
                 check=0
                 check_out = 0
-                sock.sendall(bytes("upin2--"+str(idnum)+"\n",'UTF-8'))
+                sock.sendall(bytes("--upin2--"+str(idnum)+"\n",'UTF-8'))
                 data = sock.recv(1000000)
                 list = []
                 list_add = []
@@ -1801,7 +2008,7 @@ class addpwwindow(QDialog,QWidget,login_pw_window):
                 self.label_text = ''
                 self.label.setText(self.text)
             elif self.x == 0 and self.y == 0:
-                sock.sendall(bytes("addmember--"+self.idText+"--"+self.label.text()+"\n",'UTF-8'))
+                sock.sendall(bytes("--addmember--"+self.idText+"--"+self.label.text()+"\n",'UTF-8'))
                 data = sock.recv(10)
                 a = str(data.decode())
                 a = a[0:1]
@@ -2196,7 +2403,7 @@ class loginpwwindow(QDialog,QWidget,login_pw_window):
                 self.label_text = ''
                 self.label.setText(self.text)
             elif self.x == 0 and self.y == 0:
-                sock.sendall(bytes("login--"+self.idText+"--"+self.label.text()+"\n",'UTF-8'))
+                sock.sendall(bytes("--login--"+self.idText+"--"+self.label.text()+"\n",'UTF-8'))
                 data = sock.recv(10)
                 a = str(data.decode())
                 a = a[0:1]
@@ -2259,12 +2466,11 @@ class word1window(QDialog,QWidget,form_word1window):
         self.scrollArea.setWidget(widget)
         self.scrollArea.setWidgetResizable(True)
         
-    def dataImport(self):
-        
+    def dataImport(self):        
         for i in range(3):
             if i == 0:
                 check=0
-                sock.sendall(bytes(str(i+1)+"--"+str(idnum)+"\n",'UTF-8'))
+                sock.sendall(bytes("--"+str(i+1)+"--"+str(idnum)+"\n",'UTF-8'))
                 data = sock.recv(1000000)
                     
                 list2 = []
@@ -2282,7 +2488,7 @@ class word1window(QDialog,QWidget,form_word1window):
                 list2.append(list_row)
                 self.fract_name = list2.copy()
 
-                sock.sendall(bytes("12--"+str(idnum)+"\n",'UTF-8'))
+                sock.sendall(bytes("--12--"+str(idnum)+"\n",'UTF-8'))
                 data2 = sock.recv(1000000)               
                 list3 = []
                 a2 = str(data2.decode())
@@ -2293,7 +2499,7 @@ class word1window(QDialog,QWidget,form_word1window):
             elif i == 1:
                 check=0
                 check_out = 0
-                sock.sendall(bytes(str(i+1)+"--"+str(idnum)+"\n",'UTF-8'))
+                sock.sendall(bytes("--"+str(i+1)+"--"+str(idnum)+"\n",'UTF-8'))
                 data = sock.recv(1000000)
                 list = []
                 list_add = []
@@ -2332,9 +2538,9 @@ class word1window(QDialog,QWidget,form_word1window):
                 check3=0
                 check_out3 = 0
                 a=''
-                sock.sendall(bytes(str(i+1)+"--"+str(idnum)+"\n",'UTF-8'))
+                sock.sendall(bytes("--"+str(i+1)+"--"+str(idnum)+"\n",'UTF-8'))
                 data2 = sock.recv(10000)
-                sock.sendall(bytes("32--"+str(idnum)+"\n",'UTF-8'))
+                sock.sendall(bytes("--32--"+str(idnum)+"\n",'UTF-8'))
                 while True:
                     data = sock.recv(100000)
                     a = a + data.decode()

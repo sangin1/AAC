@@ -18,18 +18,53 @@
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout_5">
-    <item row="0" column="2">
-     <layout class="QGridLayout" name="gridLayout_6">
-      <item row="0" column="0">
-       <widget class="QLabel" name="label_8">
-        <property name="text">
-         <string/>
-        </property>
-       </widget>
-      </item>
-     </layout>
+    <item row="3" column="2">
+     <widget class="QLabel" name="label_3">
+      <property name="font">
+       <font>
+        <family>AcadEref</family>
+        <pointsize>20</pointsize>
+       </font>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">border-color: rgb(170, 242, 248); 
+border-style: solid;
+border-width: 2px;
+border-radius: 10px;
+background-color: rgb(170, 242, 248);</string>
+      </property>
+      <property name="text">
+       <string>게임</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
     </item>
     <item row="5" column="2">
+     <widget class="QLabel" name="label_5">
+      <property name="font">
+       <font>
+        <family>AcadEref</family>
+        <pointsize>20</pointsize>
+       </font>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">border-color: rgb(170, 242, 248); 
+background-color: rgb(170, 242, 248);
+border-style: solid;
+border-width: 2px;
+border-radius: 10px;</string>
+      </property>
+      <property name="text">
+       <string>단어편집</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
+    </item>
+    <item row="4" column="2">
      <widget class="QLabel" name="label_4">
       <property name="font">
        <font>
@@ -53,31 +88,40 @@ background-color: rgb(170, 242, 248);</string>
       </property>
      </widget>
     </item>
-    <item row="6" column="2">
-     <widget class="QLabel" name="label_5">
-      <property name="font">
-       <font>
-        <family>AcadEref</family>
-        <pointsize>20</pointsize>
-       </font>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">border-color: rgb(170, 242, 248); 
-background-color: rgb(170, 242, 248);
-border-style: solid;
-border-width: 2px;
-border-radius: 10px;</string>
-      </property>
+    <item row="1" column="3">
+     <widget class="QLabel" name="label_6">
       <property name="text">
-       <string>단어편집</string>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignCenter</set>
+       <string/>
       </property>
      </widget>
     </item>
-    <item row="1" column="3">
-     <widget class="QLabel" name="label_6">
+    <item row="1" column="4">
+     <widget class="QLabel" name="label_11">
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="0">
+     <widget class="QLabel" name="label_10">
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="2">
+     <layout class="QGridLayout" name="gridLayout_6">
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_8">
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item row="1" column="1">
+     <widget class="QLabel" name="label">
       <property name="text">
        <string/>
       </property>
@@ -94,7 +138,7 @@ border-radius: 10px;</string>
       </item>
      </layout>
     </item>
-    <item row="7" column="2">
+    <item row="6" column="2">
      <layout class="QGridLayout" name="gridLayout_4">
       <item row="0" column="0">
        <widget class="QLabel" name="label_9">
@@ -104,13 +148,6 @@ border-radius: 10px;</string>
        </widget>
       </item>
      </layout>
-    </item>
-    <item row="1" column="1">
-     <widget class="QLabel" name="label">
-      <property name="text">
-       <string/>
-      </property>
-     </widget>
     </item>
     <item row="2" column="2">
      <widget class="QLabel" name="label_1">
@@ -132,66 +169,6 @@ border-radius: 10px;</string>
       </property>
       <property name="alignment">
        <set>Qt::AlignCenter</set>
-      </property>
-     </widget>
-    </item>
-    <item row="3" column="2">
-     <widget class="QLabel" name="label_2">
-      <property name="font">
-       <font>
-        <family>AcadEref</family>
-        <pointsize>20</pointsize>
-       </font>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">border-color: rgb(170, 242, 248); 
-border-style: solid;
-border-width: 2px;
-border-radius: 10px;
-background-color: rgb(170, 242, 248);</string>
-      </property>
-      <property name="text">
-       <string>문장말하기</string>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignCenter</set>
-      </property>
-     </widget>
-    </item>
-    <item row="4" column="2">
-     <widget class="QLabel" name="label_3">
-      <property name="font">
-       <font>
-        <family>AcadEref</family>
-        <pointsize>20</pointsize>
-       </font>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">border-color: rgb(170, 242, 248); 
-border-style: solid;
-border-width: 2px;
-border-radius: 10px;
-background-color: rgb(170, 242, 248);</string>
-      </property>
-      <property name="text">
-       <string>게임</string>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignCenter</set>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="4">
-     <widget class="QLabel" name="label_11">
-      <property name="text">
-       <string/>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="0">
-     <widget class="QLabel" name="label_10">
-      <property name="text">
-       <string/>
       </property>
      </widget>
     </item>
