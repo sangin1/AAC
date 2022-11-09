@@ -109,8 +109,8 @@ class WindowClass(QMainWindow,QWidget, form_class):
                     self.close()
                 elif idnum > 0:
                     idnum = 0
-                    self.label_list[3].setText('로그인')
-                    self.label_list[4].hide()
+                    self.label_list[2].setText('로그인')
+                    self.label_list[3].hide()
             elif self.cus == 3 and self.checkupdate == 1:
                 self.upin = selectfractwindow()   
                 self.upin.showMaximized()
@@ -1472,7 +1472,7 @@ class addfractwordwindow(QDialog,QWidget,login_pw_window):
                 self.label_text = ''
                 self.label.setText(self.text)
             elif self.x == 0 and self.y == 0:
-                sock.sendall(bytes("addclass--"+self.idText+"--"+self.label.text()+"--"+str(idnum)+"\n",'UTF-8'))
+                sock.sendall(bytes("--addclass--"+self.idText+"--"+self.label.text()+"--"+str(idnum)+"\n",'UTF-8'))
                 data = sock.recv(10)
                 a = str(data.decode())
                 a = a[0:1]
@@ -1725,6 +1725,7 @@ class selectfractwindow(QDialog,QWidget,form_word1window):
                 data = sock.recv(1000000)               
                 list2 = []
                 a = str(data.decode())
+                print(a)
                 list_row = []
                 list_row.append("분류편집")
                 if(a[:-2] == '0'):
