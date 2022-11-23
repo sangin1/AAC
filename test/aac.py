@@ -139,8 +139,6 @@ class wordquizwindow(QDialog,QWidget, wordquiz_window):
   
     def __init__(self):
         super(wordquizwindow,self).__init__()
-        self.sock = socket(AF_INET,SOCK_STREAM)
-        self.sock.connect(('aszx1234.duckdns.org',6000));
         self.dataImport()
         self.initUi()
         self.label_list[0][0].setStyleSheet(self.border_s)
@@ -185,15 +183,14 @@ class wordquizwindow(QDialog,QWidget, wordquiz_window):
             self.second.exec()
             self.second = WindowClass()    
             self.second.showMaximized()
-            self.sock.close()
             self.close()
         self.time_label.setText("시간 "+str(self.time))
         
         
     def dataImport(self):    
         check=0
-        self.sock.sendall(bytes("--cword--1"+"\n",'UTF-8'))
-        data = self.sock.recv(1000000)
+        sock.sendall(bytes("--cword--1"+"\n",'UTF-8'))
+        data = sock.recv(1000000)
                     
         list2 = []
         a = str(data.decode())
@@ -214,7 +211,6 @@ class wordquizwindow(QDialog,QWidget, wordquiz_window):
         if e.key() == Qt.Key_G:
             self.second = WindowClass()    
             self.second.showMaximized()
-            self.sock.close()
             self.close()
         elif e.key() == Qt.Key_S:
             if self.x < len(self.label_list)-2 and self.y < len(self.label_list[self.x+1]):
@@ -265,8 +261,8 @@ class wordquizwindow(QDialog,QWidget, wordquiz_window):
                         checktrue+=1
                 if checktrue == 0 :
                     self.checklist.append(self.text)
-                    self.sock.sendall(bytes("--wordCheck--"+self.text+"\n",'UTF-8'))
-                    data = self.sock.recv(1000000)
+                    sock.sendall(bytes("--wordCheck--"+self.text+"\n",'UTF-8'))
+                    data = sock.recv(1000000)
                     a = str(data.decode())
                     result=a[:-2]
                     if result == '1':
@@ -575,12 +571,9 @@ class updateword2window(QDialog,QWidget,login_pw_window):
                 self.label_text = ''
                 self.label.setText(self.text)
             elif self.x == 0 and self.y == 0:
-                sock = socket(AF_INET,SOCK_STREAM)
-                sock.connect(('aszx1234.duckdns.org',6000));
                 sock.sendall(bytes("--updateword--"+self.idText+"--"+self.label.text()+"--"+str(idnum)+"--"+self.word+"\n",'UTF-8'))
                 data = sock.recv(10)
                 a = str(data.decode())
-                sock.close()
                 a = a[0:1]
                 if int(a) == 0:
                     self.second = warningwindow('실패')    
@@ -788,13 +781,10 @@ class delwordwindow(QDialog,QWidget,form_word1window):
                 self.label_list[self.x][self.y].setStyleSheet(self.border_b)
                 self.y-=1
                 self.label_list[self.x][self.y].setStyleSheet(self.border_s)
-        elif e.key() == Qt.Key_F:
-                sock = socket(AF_INET,SOCK_STREAM)
-                sock.connect(('aszx1234.duckdns.org',6000));
+        elif e.key() == Qt.Key_F:            
                 sock.sendall(bytes("--delword--"+self.fract_code+"--"+self.word_name[self.x][self.y]+"--"+str(idnum)+"\n",'UTF-8'))
                 data = sock.recv(10)
                 a = str(data.decode())
-                sock.close()
                 a = a[0:1]
                 if int(a) == 0:
                     self.second = warningwindow('실패')    
@@ -927,12 +917,9 @@ class addwordwindow(QDialog,QWidget,login_pw_window):
                 self.label_text = ''
                 self.label.setText(self.text)
             elif self.x == 0 and self.y == 0:
-                sock = socket(AF_INET,SOCK_STREAM)
-                sock.connect(('aszx1234.duckdns.org',6000));
                 sock.sendall(bytes("--addword--"+self.idText+"--"+self.label.text()+"--"+str(idnum)+"\n",'UTF-8'))
                 data = sock.recv(10)
                 a = str(data.decode())
-                sock.close()
                 a = a[0:1]
                 if int(a) == 0:
                     self.second = warningwindow('실패')    
@@ -1120,12 +1107,9 @@ class updatefractwordwindow(QDialog,QWidget,login_pw_window):
                 self.label_text = ''
                 self.label.setText(self.text)
             elif self.x == 0 and self.y == 0:
-                sock = socket(AF_INET,SOCK_STREAM)
-                sock.connect(('aszx1234.duckdns.org',6000));
                 sock.sendall(bytes("--updateclass--"+self.idText+"--"+self.label.text()+"--"+str(idnum)+"\n",'UTF-8'))
                 data = sock.recv(10)
                 a = str(data.decode())
-                sock.close()
                 a = a[0:1]
                 if int(a) == 0:
                     self.second = warningwindow('실패')    
@@ -1259,8 +1243,6 @@ class delfractchecksumwindow(QDialog,QWidget,checksum_window):
         global idnum
         if e.key() == Qt.Key_F:
             if self.cus == 0:
-                sock = socket(AF_INET,SOCK_STREAM)
-                sock.connect(('aszx1234.duckdns.org',6000));
                 sock.sendall(bytes("--delclass--"+str(idnum)+"--"+self.code+"\n",'UTF-8'))
                 self.main = selectfractwindow()    
                 self.main.showMaximized()
@@ -1496,12 +1478,9 @@ class addfractwordwindow(QDialog,QWidget,login_pw_window):
                 self.label_text = ''
                 self.label.setText(self.text)
             elif self.x == 0 and self.y == 0:
-                sock = socket(AF_INET,SOCK_STREAM)
-                sock.connect(('aszx1234.duckdns.org',6000));
                 sock.sendall(bytes("--addclass--"+self.idText+"--"+self.label.text()+"--"+str(idnum)+"\n",'UTF-8'))
                 data = sock.recv(10)
                 a = str(data.decode())
-                sock.close()
                 a = a[0:1]
                 if int(a) == 1:
                     self.second = warningwindow('존재하는 분류')    
@@ -1745,8 +1724,6 @@ class selectfractwindow(QDialog,QWidget,form_word1window):
         
     def dataImport(self):
         global idnum
-        sock = socket(AF_INET,SOCK_STREAM)
-        sock.connect(('aszx1234.duckdns.org',6000));
         for i in range(2):
             if i == 0:
                 check=1
@@ -1858,7 +1835,6 @@ class selectfractwindow(QDialog,QWidget,form_word1window):
 
                 list.append(list_add)
                 self.word_name=list.copy()
-                sock.close()
                        
     def keyReleaseEvent(self,e):
         
@@ -2039,12 +2015,9 @@ class addpwwindow(QDialog,QWidget,login_pw_window):
                 self.label_text = ''
                 self.label.setText(self.text)
             elif self.x == 0 and self.y == 0:
-                sock = socket(AF_INET,SOCK_STREAM)
-                sock.connect(('aszx1234.duckdns.org',6000));
                 sock.sendall(bytes("--addmember--"+self.idText+"--"+self.label.text()+"\n",'UTF-8'))
                 data = sock.recv(10)
                 a = str(data.decode())
-                sock.close()
                 a = a[0:1]
                 if int(a) == 1:
                     self.second = warningwindow('존재하는 아이디')    
@@ -2437,12 +2410,9 @@ class loginpwwindow(QDialog,QWidget,login_pw_window):
                 self.label_text = ''
                 self.label.setText(self.text)
             elif self.x == 0 and self.y == 0:
-                sock = socket(AF_INET,SOCK_STREAM)
-                sock.connect(('aszx1234.duckdns.org',6000));
                 sock.sendall(bytes("--login--"+self.idText+"--"+self.label.text()+"\n",'UTF-8'))
                 data = sock.recv(10)
                 a = str(data.decode())
-                sock.close()
                 a = a[0:1]
                 if int(a) == 0:
                     idnum = int(a)
@@ -2503,9 +2473,7 @@ class word1window(QDialog,QWidget,form_word1window):
         self.scrollArea.setWidget(widget)
         self.scrollArea.setWidgetResizable(True)
         
-    def dataImport(self):
-        sock = socket(AF_INET,SOCK_STREAM)
-        sock.connect(('aszx1234.duckdns.org',6000));
+    def dataImport(self):        
         for i in range(3):
             if i == 0:
                 check=0
@@ -2619,7 +2587,6 @@ class word1window(QDialog,QWidget,form_word1window):
 
                 list3.append(list_add3)
                 self.image_name=list3.copy()
-                sock.close()
                        
     def keyReleaseEvent(self,e):
         
@@ -2920,7 +2887,10 @@ def jamo3(text2):
     return join_jamos(result)
     
 if __name__ == '__main__':
+    sock = socket(AF_INET,SOCK_STREAM)
+    sock.connect(('aszx1234.duckdns.org',6000));
     app = QApplication(sys.argv)
     myWindow = WindowClass()
     myWindow.showMaximized()
     app.exec_()
+    sock.close()

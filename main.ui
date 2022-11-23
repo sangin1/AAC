@@ -131,6 +131,9 @@ background-color: rgb(170, 242, 248);</string>
      <layout class="QGridLayout" name="gridLayout_3">
       <item row="0" column="0">
        <widget class="QLabel" name="label_7">
+        <property name="styleSheet">
+         <string notr="true">image: url(:/newPrefix/img/a.PNG);</string>
+        </property>
         <property name="text">
          <string/>
         </property>
